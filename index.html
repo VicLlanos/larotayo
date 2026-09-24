@@ -57,6 +57,7 @@
       position: relative;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* ============================================ */
@@ -66,7 +67,6 @@
       width: 100%;
       text-align: center;
       flex-shrink: 0;
-      position: relative;
     }
 
     .game-title {
@@ -158,9 +158,7 @@
       min-height: 48px;
     }
 
-    .mp-btn:active {
-      transform: scale(0.97);
-    }
+    .mp-btn:active { transform: scale(0.97); }
 
     .mp-btn.primary {
       background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
@@ -224,10 +222,7 @@
       min-height: 48px;
     }
 
-    .join-input::placeholder {
-      color: rgba(255,255,255,0.4);
-    }
-
+    .join-input::placeholder { color: rgba(255,255,255,0.4); }
     .join-input:focus {
       border-color: var(--accent-color);
       background: rgba(255,255,255,0.12);
@@ -286,7 +281,7 @@
       cursor: pointer;
       transition: var(--transition);
       border: 2px solid rgba(255,255,255,0.1);
-      min-height: 110px;
+      min-height: 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -306,12 +301,12 @@
     }
 
     .game-card .game-emoji {
-      font-size: 2rem;
+      font-size: 2.2rem;
       line-height: 1;
     }
 
     .game-card .game-name {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--light-color);
     }
@@ -403,13 +398,8 @@
       transform: scale(1.05);
     }
 
-    .player-tag.active.blue {
-      box-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
-    }
-
-    .player-tag.active.pink {
-      box-shadow: 0 0 12px rgba(78, 205, 196, 0.6);
-    }
+    .player-tag.active.blue { box-shadow: 0 0 12px rgba(255, 107, 107, 0.6); }
+    .player-tag.active.pink { box-shadow: 0 0 12px rgba(78, 205, 196, 0.6); }
 
     .turn-indicator {
       background: var(--accent-color);
@@ -428,26 +418,28 @@
       50% { opacity: 0.85; transform: scale(1.05); }
     }
 
-    /* ============================================ */
-    /* GAME BOARDS                                  */
-    /* ============================================ */
-
-    /* === CONNECT 4 === */
-    .board-wrapper {
-      position: relative;
+    /* Board container - the shared wrapper for all games */
+    #boardContainer {
       width: 100%;
-      max-width: 440px;
-      margin: 0 auto 12px;
-      background: linear-gradient(180deg, #2563eb, #1e3a8a);
-      border-radius: 18px;
-      padding: 10px;
-      box-shadow: 
-        0 8px 25px rgba(30, 58, 138, 0.5),
-        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
       flex-shrink: 0;
     }
 
-    .board {
+    /* ============================================ */
+    /* CONNECT 4 BOARD                              */
+    /* ============================================ */
+    .board-wrapper {
+      width: 100%;
+      max-width: 440px;
+      background: linear-gradient(180deg, #2563eb, #1e3a8a);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .c4-board {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       grid-template-rows: repeat(6, 1fr);
@@ -455,47 +447,34 @@
       aspect-ratio: 7 / 6;
       background: #0f1d4a;
       border-radius: 12px;
-      overflow: hidden;
       padding: 5px;
-      position: relative;
     }
 
-    .cell {
+    .c4-cell {
       background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       cursor: pointer;
-      position: relative;
       transition: all 0.15s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
       aspect-ratio: 1;
-      overflow: hidden;
     }
 
-    .cell:active:not(.taken) {
+    .c4-cell:active:not(.taken) {
       background: #e0e0e0;
       transform: scale(0.92);
     }
 
-    .cell.taken {
-      cursor: not-allowed;
-    }
+    .c4-cell.taken { cursor: not-allowed; }
 
-    .cell.blue {
+    .c4-cell.blue {
       background: radial-gradient(circle at 30% 30%, #ff9a9e, var(--player1-color));
-      box-shadow: 
-        inset 0 3px 6px rgba(0,0,0,0.25), 
-        0 0 12px rgba(255, 107, 107, 0.6);
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.25), 0 0 12px rgba(255, 107, 107, 0.6);
       animation: dropIn 0.5s cubic-bezier(0.25, 1.5, 0.5, 1);
     }
 
-    .cell.pink {
+    .c4-cell.pink {
       background: radial-gradient(circle at 30% 30%, #a1e8e0, var(--player2-color));
-      box-shadow: 
-        inset 0 3px 6px rgba(0,0,0,0.25), 
-        0 0 12px rgba(78, 205, 196, 0.6);
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.25), 0 0 12px rgba(78, 205, 196, 0.6);
       animation: dropIn 0.5s cubic-bezier(0.25, 1.5, 0.5, 1);
     }
 
@@ -506,7 +485,7 @@
       100% { transform: translateY(0) scale(1); opacity: 1; }
     }
 
-    .cell.winning {
+    .c4-cell.winning {
       animation: winPulse 0.8s infinite;
       border: 3px solid gold;
       z-index: 5;
@@ -517,34 +496,37 @@
       50% { transform: scale(1.12); box-shadow: 0 0 25px gold, 0 0 50px gold; }
     }
 
-    /* === TIC TAC TOE === */
+    /* ============================================ */
+    /* TIC TAC TOE BOARD                            */
+    /* ============================================ */
     .ttt-board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 10px;
       width: 100%;
-      max-width: 340px;
-      margin: 0 auto 12px;
-      padding: 12px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 18px;
-      border: 2px solid rgba(255,255,255,0.1);
+      max-width: 380px;
       aspect-ratio: 1;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.1);
     }
 
     .ttt-cell {
       background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
+      border-radius: 14px;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      font-size: 3rem;
+      font-size: clamp(2.5rem, 12vw, 4rem);
       font-weight: 700;
       transition: all 0.2s ease;
       box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
       color: var(--dark-color);
       user-select: none;
+      aspect-ratio: 1;
     }
 
     .ttt-cell:active:not(.taken) {
@@ -552,9 +534,7 @@
       background: #e0e0e0;
     }
 
-    .ttt-cell.taken {
-      cursor: not-allowed;
-    }
+    .ttt-cell.taken { cursor: not-allowed; }
 
     .ttt-cell.blue {
       background: radial-gradient(circle at 30% 30%, #ffd0d0, #ffb3b3);
@@ -575,46 +555,61 @@
     }
 
     .ttt-cell.winning {
-      animation: winPulse 0.8s infinite;
+      animation: winPulseTTT 0.8s infinite;
       border: 3px solid gold;
       z-index: 5;
     }
 
-    /* === MEMORY MATCH === */
+    @keyframes winPulseTTT {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px gold, 0 0 30px gold; }
+      50% { transform: scale(1.08); box-shadow: 0 0 25px gold, 0 0 50px gold; }
+    }
+
+    /* ============================================ */
+    /* MEMORY MATCH BOARD                           */
+    /* ============================================ */
     .memory-board {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
       width: 100%;
-      max-width: 400px;
-      margin: 0 auto 12px;
+      max-width: 420px;
       padding: 12px;
       background: rgba(255,255,255,0.05);
-      border-radius: 18px;
+      border-radius: 20px;
       border: 2px solid rgba(255,255,255,0.1);
     }
 
     .memory-card {
       aspect-ratio: 1;
-      background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.8rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-      position: relative;
+      transition: transform 0.5s;
       transform-style: preserve-3d;
+      position: relative;
+      border-radius: 12px;
     }
 
     .memory-card:active:not(.flipped):not(.matched) {
       transform: scale(0.95);
     }
 
-    .memory-card .card-front,
-    .memory-card .card-back {
+    .memory-card .card-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s;
+      transform-style: preserve-3d;
+      border-radius: 12px;
+    }
+
+    .memory-card.flipped .card-inner,
+    .memory-card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .memory-card .card-face {
       position: absolute;
       top: 0;
       left: 0;
@@ -623,132 +618,124 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 10px;
+      border-radius: 12px;
       backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      font-size: clamp(1.6rem, 7vw, 2.5rem);
     }
 
     .memory-card .card-front {
       background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
-      font-size: 1.5rem;
       color: white;
+      font-size: clamp(1.5rem, 6vw, 2rem);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
     .memory-card .card-back {
       background: rgba(255, 255, 255, 0.95);
       transform: rotateY(180deg);
-      font-size: 1.8rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
-    .memory-card.flipped {
-      transform: rotateY(180deg);
-    }
-
-    .memory-card.matched {
+    .memory-card.matched .card-back {
+      box-shadow: 0 0 15px gold, inset 0 0 20px rgba(255, 215, 0, 0.3);
       animation: matchPulse 0.6s ease;
-      opacity: 0.7;
-      transform: rotateY(180deg);
     }
 
-    .memory-card.blue-matched .card-back {
+    .memory-card.matched-blue .card-back {
       background: radial-gradient(circle, #ffd0d0, #ffb3b3);
+      box-shadow: 0 0 15px var(--player1-color), inset 0 0 20px rgba(255, 107, 107, 0.4);
     }
 
-    .memory-card.pink-matched .card-back {
+    .memory-card.matched-pink .card-back {
       background: radial-gradient(circle, #c8f0ed, #a1e8e0);
+      box-shadow: 0 0 15px var(--player2-color), inset 0 0 20px rgba(78, 205, 196, 0.4);
     }
 
     @keyframes matchPulse {
       0%, 100% { transform: rotateY(180deg) scale(1); }
-      50% { transform: rotateY(180deg) scale(1.15); }
+      50% { transform: rotateY(180deg) scale(1.1); }
     }
 
-    .memory-card.matched-blue {
-      box-shadow: 0 0 15px var(--player1-color);
-    }
-
-    .memory-card.matched-pink {
-      box-shadow: 0 0 15px var(--player2-color);
-    }
-
-    /* === DOTS AND BOXES === */
-    .dots-board {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      margin: 0 auto 12px;
-      padding: 20px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 18px;
-      border: 2px solid rgba(255,255,255,0.1);
-      aspect-ratio: 1;
+    /* ============================================ */
+    /* DOTS AND BOXES BOARD                         */
+    /* ============================================ */
+    .db-board {
       display: grid;
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.1);
       grid-template-columns: repeat(9, 1fr);
       grid-template-rows: repeat(9, 1fr);
-      gap: 2px;
+      gap: 0;
     }
 
-    .dot {
-      width: 100%;
-      height: 100%;
+    .db-dot {
+      width: 12px;
+      height: 12px;
       background: var(--light-color);
       border-radius: 50%;
       align-self: center;
       justify-self: center;
-      max-width: 10px;
-      max-height: 10px;
+      box-shadow: 0 0 6px rgba(255,255,255,0.5);
     }
 
-    .line {
-      background: rgba(255,255,255,0.1);
+    .db-line {
+      background: rgba(255,255,255,0.12);
       cursor: pointer;
       transition: all 0.2s;
-      border-radius: 3px;
-    }
-
-    .line:hover {
-      background: rgba(255, 230, 109, 0.4);
-    }
-
-    .line.line-h {
-      height: 6px;
+      border-radius: 4px;
       align-self: center;
+      justify-self: center;
+    }
+
+    .db-line.line-h {
+      height: 8px;
       width: 100%;
     }
 
-    .line.line-v {
-      width: 6px;
-      justify-self: center;
+    .db-line.line-v {
+      width: 8px;
       height: 100%;
     }
 
-    .line.blue {
+    .db-line:active:not(.blue):not(.pink) {
+      background: rgba(255, 230, 109, 0.6);
+      transform: scale(1.15);
+    }
+
+    .db-line.blue {
       background: var(--player1-color);
-      box-shadow: 0 0 8px var(--player1-color);
+      box-shadow: 0 0 10px var(--player1-color);
     }
 
-    .line.pink {
+    .db-line.pink {
       background: var(--player2-color);
-      box-shadow: 0 0 8px var(--player2-color);
+      box-shadow: 0 0 10px var(--player2-color);
     }
 
-    .box {
-      background: transparent;
-      border-radius: 4px;
+    .db-box {
+      border-radius: 6px;
       transition: all 0.3s ease;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.7rem;
+      align-self: stretch;
+      justify-self: stretch;
+      margin: 2px;
     }
 
-    .box.blue {
-      background: rgba(255, 107, 107, 0.4);
-      animation: boxClaim 0.4s ease;
+    .db-box.blue {
+      background: rgba(255, 107, 107, 0.45);
+      animation: boxClaim 0.5s ease;
+      box-shadow: inset 0 0 15px rgba(255, 107, 107, 0.6);
     }
 
-    .box.pink {
-      background: rgba(78, 205, 196, 0.4);
-      animation: boxClaim 0.4s ease;
+    .db-box.pink {
+      background: rgba(78, 205, 196, 0.45);
+      animation: boxClaim 0.5s ease;
+      box-shadow: inset 0 0 15px rgba(78, 205, 196, 0.6);
     }
 
     @keyframes boxClaim {
@@ -793,9 +780,7 @@
       scrollbar-width: thin;
     }
 
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.2);
       border-radius: 2px;
@@ -839,13 +824,8 @@
       min-height: 40px;
     }
 
-    .chat-input-area input::placeholder {
-      color: rgba(255,255,255,0.35);
-    }
-
-    .chat-input-area input:focus {
-      border-color: var(--accent-color);
-    }
+    .chat-input-area input::placeholder { color: rgba(255,255,255,0.35); }
+    .chat-input-area input:focus { border-color: var(--accent-color); }
 
     .chat-input-area button {
       background: var(--secondary-color);
@@ -887,9 +867,7 @@
       min-height: 48px;
     }
 
-    .btn:active {
-      transform: scale(0.96);
-    }
+    .btn:active { transform: scale(0.96); }
 
     #resetBtn {
       max-width: 220px;
@@ -1032,14 +1010,8 @@
     }
 
     @keyframes burstUp {
-      0% {
-        opacity: 1;
-        transform: translate(0, 0) scale(0.5) rotate(0deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(360deg);
-      }
+      0% { opacity: 1; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(360deg); }
     }
 
     /* ============================================ */
@@ -1061,9 +1033,7 @@
       transition: transform 0.3s ease;
     }
 
-    .reconnect-banner.visible {
-      transform: translateY(0);
-    }
+    .reconnect-banner.visible { transform: translateY(0); }
 
     /* ============================================ */
     /* RESPONSIVE                                   */
@@ -1073,7 +1043,7 @@
       .game-subtitle { font-size: 0.7rem; }
       #game-container { padding: 8px 8px 15px; }
       .board-wrapper { padding: 8px; }
-      .board { gap: 4px; padding: 4px; }
+      .c4-board { gap: 4px; padding: 4px; }
       .status-bar { font-size: 0.7rem; padding: 8px 10px; }
       .turn-indicator { font-size: 0.65rem; padding: 5px 10px; }
       .overlay h1 { font-size: 1.4rem; }
@@ -1081,11 +1051,15 @@
       .bear-gif { width: 90px; }
       .chat-messages { height: 50px; }
       .mp-btn { font-size: 0.85rem; padding: 12px 16px; }
-      .ttt-cell { font-size: 2.2rem; }
-      .game-card { padding: 14px 8px; min-height: 95px; }
-      .game-card .game-emoji { font-size: 1.6rem; }
-      .game-card .game-name { font-size: 0.75rem; }
-      .memory-card .card-back { font-size: 1.4rem; }
+      .game-card { padding: 14px 8px; min-height: 105px; }
+      .game-card .game-emoji { font-size: 1.8rem; }
+      .game-card .game-name { font-size: 0.8rem; }
+      .ttt-board { gap: 8px; padding: 10px; }
+      .memory-board { gap: 6px; padding: 8px; }
+      .db-board { padding: 8px; }
+      .db-dot { width: 10px; height: 10px; }
+      .db-line.line-h { height: 6px; }
+      .db-line.line-v { width: 6px; }
     }
 
     @media (max-height: 700px) {
@@ -1160,7 +1134,7 @@
       <div class="arena-header">
         <button class="back-btn" id="backBtn">← Back</button>
         <div class="arena-title" id="arenaTitle">Connect 4</div>
-        <button class="back-btn" id="hubRefreshBtn" style="visibility: hidden;">🔄</button>
+        <div style="width: 60px;"></div>
       </div>
 
       <div class="status-bar">
@@ -1169,7 +1143,7 @@
         <div class="player-tag pink" id="tagPink">Mahal 💖</div>
       </div>
 
-      <!-- Board Container -->
+      <!-- Board Container - fills with active game -->
       <div id="boardContainer"></div>
 
       <button class="btn" id="resetBtn" style="display: none;">Next Round 💕</button>
@@ -1214,7 +1188,6 @@
     // LOVE ARCADE - Multi-Game Multiplayer
     // ============================================
 
-    // --- Multiplayer State (with auto-reconnect) ---
     const multiplayerState = {
       peer: null,
       conn: null,
@@ -1231,33 +1204,17 @@
       pendingMessages: []
     };
 
-    // --- Global Game State ---
     const gameState = {
-      currentGame: null, // 'connect4', 'tictactoe', 'memory', 'dotsboxes'
-      myColor: 'blue', // 'blue' or 'pink'
+      currentGame: null,
+      myColor: 'blue',
       opponentColor: 'pink',
       currentPlayer: 'blue',
       winner: null,
       chatMessages: [],
-      // Per-game boards
-      connect4: {
-        board: new Array(42).fill(''),
-        winningCells: []
-      },
-      tictactoe: {
-        board: new Array(9).fill(''),
-        winningCells: []
-      },
-      memory: {
-        cards: [], // {emoji, flipped, matched, matchedBy}
-        flippedIndices: [],
-        lockBoard: false
-      },
-      dotsboxes: {
-        lines: [], // {type: 'h'|'v', row, col, owner: null}
-        boxes: [], // {row, col, owner: null}
-        boardSize: 4 // 4x4 boxes -> 5x5 dots
-      }
+      connect4: { board: new Array(42).fill(''), winningCells: [] },
+      tictactoe: { board: new Array(9).fill(''), winningCells: [] },
+      memory: { cards: [], flippedIndices: [], lockBoard: false },
+      dotsboxes: { lines: [], boxes: [], boardSize: 4 }
     };
 
     // --- DOM Elements ---
@@ -1314,12 +1271,11 @@
           }
         });
       } catch (e) {
-        console.error('Failed to create peer:', e);
         setTimeout(initializeMultiplayer, 2000);
         return;
       }
 
-      multiplayerState.peer.on('open', (id) => {
+      multiplayerState.peer.on('open', () => {
         updateConnectionStatus('disconnected', 'Ready to connect');
       });
 
@@ -1327,6 +1283,8 @@
         setupConnection(conn);
         multiplayerState.isHost = true;
         multiplayerState.playerIndex = 0;
+        gameState.myColor = 'blue';
+        gameState.opponentColor = 'pink';
         updateConnectionStatus('connected', '💖 Mahal is connected!');
         hostGameBtn.style.display = 'none';
         joinGroup.style.display = 'none';
@@ -1347,15 +1305,12 @@
         } else if (err.type === 'network' || err.type === 'server-error') {
           showReconnectBanner();
           setTimeout(() => {
-            if (multiplayerState.isHost) {
-              initializeMultiplayer();
-            }
+            if (multiplayerState.isHost) initializeMultiplayer();
           }, 3000);
         }
       });
 
       multiplayerState.peer.on('disconnected', () => {
-        // PeerJS lost connection to signaling server - try to reconnect
         if (!multiplayerState.intentionalClose) {
           showReconnectBanner();
           setTimeout(() => {
@@ -1363,9 +1318,7 @@
               if (multiplayerState.peer && !multiplayerState.peer.destroyed) {
                 multiplayerState.peer.reconnect();
               }
-            } catch (e) {
-              console.error('Reconnect error:', e);
-            }
+            } catch (e) {}
           }, 1500);
         }
       });
@@ -1391,11 +1344,8 @@
         }
       });
 
-      conn.on('data', (data) => {
-        handleIncomingData(data);
-      });
+      conn.on('data', (data) => handleIncomingData(data));
 
-      // KEY FIX: Handle close gracefully and try to reconnect
       conn.on('close', () => {
         multiplayerState.isConnected = false;
         updateConnectionStatus('connecting', 'Reconnecting...');
@@ -1404,10 +1354,7 @@
         attemptReconnect();
       });
 
-      conn.on('error', (err) => {
-        console.error('Connection error:', err);
-        // Don't kill the connection on transient errors
-      });
+      conn.on('error', () => {});
     }
 
     function attemptReconnect() {
@@ -1431,7 +1378,6 @@
             });
             setupConnection(newConn);
           } else {
-            // Peer is destroyed, reinitialize
             initializeMultiplayer();
             setTimeout(() => {
               if (multiplayerState.remotePlayer) {
@@ -1444,7 +1390,6 @@
             }, 1500);
           }
         } catch (e) {
-          console.error('Reconnect attempt failed:', e);
           attemptReconnect();
         }
       }, 2000);
@@ -1456,9 +1401,7 @@
         if (multiplayerState.isConnected && multiplayerState.conn) {
           try {
             multiplayerState.conn.send({ type: 'ping', t: Date.now() });
-          } catch (e) {
-            console.error('Heartbeat failed:', e);
-          }
+          } catch (e) {}
         }
       }, 5000);
     }
@@ -1470,17 +1413,14 @@
       }
     }
 
-    function showReconnectBanner() {
-      reconnectBanner.classList.add('visible');
-    }
-
-    function hideReconnectBanner() {
-      reconnectBanner.classList.remove('visible');
-    }
+    function showReconnectBanner() { reconnectBanner.classList.add('visible'); }
+    function hideReconnectBanner() { reconnectBanner.classList.remove('visible'); }
 
     function hostGame() {
       multiplayerState.isHost = true;
       multiplayerState.playerIndex = 0;
+      gameState.myColor = 'blue';
+      gameState.opponentColor = 'pink';
       hostInfoEl.style.display = 'block';
       hostIdEl.textContent = multiplayerState.peerId;
       hostGameBtn.style.display = 'none';
@@ -1498,10 +1438,16 @@
       multiplayerState.isHost = false;
       multiplayerState.playerIndex = 1;
       multiplayerState.remotePlayer = hostId;
+      gameState.myColor = 'pink';
+      gameState.opponentColor = 'blue';
       
       hostGameBtn.style.display = 'none';
       joinGroup.style.display = 'none';
       hostInfoEl.style.display = 'none';
+      
+      // Update tags
+      tagBlue.textContent = '💙 Me';
+      tagPink.textContent = 'You 💖';
       
       updateConnectionStatus('connecting', 'Connecting to your love...');
       
@@ -1510,7 +1456,6 @@
           const conn = multiplayerState.peer.connect(hostId, { reliable: true });
           setupConnection(conn);
         } catch (e) {
-          console.error('Connect failed:', e);
           setTimeout(attemptConnect, 2000);
         }
       };
@@ -1537,7 +1482,6 @@
 
     function sendGameState() {
       if (!multiplayerState.isConnected || !multiplayerState.conn) {
-        // Queue the message for when we reconnect
         multiplayerState.pendingMessages.push({ type: 'state' });
         return;
       }
@@ -1548,7 +1492,6 @@
           sender: multiplayerState.isHost ? 'host' : 'client'
         });
       } catch (e) {
-        console.error('Send failed:', e);
         multiplayerState.pendingMessages.push({ type: 'state' });
       }
     }
@@ -1566,7 +1509,6 @@
           sender: multiplayerState.isHost ? 'host' : 'client'
         });
       } catch (e) {
-        console.error('Send action failed:', e);
         multiplayerState.pendingMessages.push({ type: 'action', action, data });
       }
     }
@@ -1586,22 +1528,10 @@
         currentPlayer: gameState.currentPlayer,
         winner: gameState.winner,
         chatMessages: gameState.chatMessages,
-        connect4: {
-          board: gameState.connect4.board,
-          winningCells: gameState.connect4.winningCells
-        },
-        tictactoe: {
-          board: gameState.tictactoe.board,
-          winningCells: gameState.tictactoe.winningCells
-        },
-        memory: {
-          cards: gameState.memory.cards,
-          flippedIndices: gameState.memory.flippedIndices
-        },
-        dotsboxes: {
-          lines: gameState.dotsboxes.lines,
-          boxes: gameState.dotsboxes.boxes
-        }
+        connect4: { board: gameState.connect4.board, winningCells: gameState.connect4.winningCells },
+        tictactoe: { board: gameState.tictactoe.board, winningCells: gameState.tictactoe.winningCells },
+        memory: { cards: gameState.memory.cards, flippedIndices: gameState.memory.flippedIndices },
+        dotsboxes: { lines: gameState.dotsboxes.lines, boxes: gameState.dotsboxes.boxes }
       };
     }
 
@@ -1610,17 +1540,15 @@
       gameState.currentPlayer = state.currentPlayer;
       gameState.winner = state.winner;
       gameState.chatMessages = state.chatMessages || [];
-      if (state.connect4) Object.assign(gameState.connect4, state.connect4);
-      if (state.tictactoe) Object.assign(gameState.tictactoe, state.tictactoe);
-      if (state.memory) Object.assign(gameState.memory, state.memory);
-      if (state.dotsboxes) Object.assign(gameState.dotsboxes, state.dotsboxes);
+      if (state.connect4) { gameState.connect4.board = state.connect4.board; gameState.connect4.winningCells = state.connect4.winningCells || []; }
+      if (state.tictactoe) { gameState.tictactoe.board = state.tictactoe.board; gameState.tictactoe.winningCells = state.tictactoe.winningCells || []; }
+      if (state.memory) { gameState.memory.cards = state.memory.cards || []; gameState.memory.flippedIndices = state.memory.flippedIndices || []; }
+      if (state.dotsboxes) { gameState.dotsboxes.lines = state.dotsboxes.lines || []; gameState.dotsboxes.boxes = state.dotsboxes.boxes || []; }
     }
 
     function handleIncomingData(data) {
       if (data.type === 'ping') {
-        if (multiplayerState.conn) {
-          try { multiplayerState.conn.send({ type: 'pong' }); } catch(e) {}
-        }
+        if (multiplayerState.conn) { try { multiplayerState.conn.send({ type: 'pong' }); } catch(e) {} }
         return;
       }
       if (data.type === 'pong') return;
@@ -1633,6 +1561,9 @@
               renderCurrentGame();
               renderChat();
               updateUI();
+              if (gameState.winner && gameOverScreen.classList.contains('hidden')) {
+                setTimeout(showGameOver, 600);
+              }
             } else {
               showGameHub();
             }
@@ -1649,22 +1580,19 @@
     function handleRemoteAction(action, data) {
       switch (action) {
         case 'selectGame':
-          if (gameState.currentGame !== data.game) {
-            gameState.currentGame = data.game;
-            gameState.winner = null;
-            gameState.currentPlayer = 'blue';
-            initGameBoard(data.game);
-            renderCurrentGame();
-            updateUI();
-          }
+          gameState.currentGame = data.game;
+          gameState.winner = null;
+          gameState.currentPlayer = 'blue';
+          gameState.chatMessages = [];
+          initGameBoard(data.game);
+          showGameArena();
+          renderCurrentGame();
+          updateUI();
+          renderChat();
           break;
         case 'makeMove':
-          if (multiplayerState.isHost) {
-            processMove(data);
-            sendGameState();
-          } else {
-            processMove(data);
-          }
+          processMove(data);
+          if (multiplayerState.isHost) sendGameState();
           break;
         case 'chat':
           gameState.chatMessages.push(data.message);
@@ -1696,8 +1624,8 @@
       gameArena.style.display = 'none';
       gameHub.style.display = 'flex';
       gameOverScreen.classList.add('hidden');
+      boardContainer.innerHTML = '';
       
-      // Highlight current game if any
       document.querySelectorAll('.game-card').forEach(card => {
         card.classList.toggle('active', card.dataset.game === gameState.currentGame);
       });
@@ -1712,31 +1640,20 @@
     document.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => {
         const game = card.dataset.game;
-        selectGame(game);
+        gameState.currentGame = game;
+        gameState.winner = null;
+        gameState.currentPlayer = 'blue';
+        gameState.chatMessages = [];
+        initGameBoard(game);
+        showGameArena();
+        renderCurrentGame();
+        updateUI();
+        renderChat();
         if (multiplayerState.isConnected) {
           sendAction('selectGame', { game: game });
         }
       });
     });
-
-    function selectGame(game) {
-      if (gameState.currentGame === game && gameState.winner === null) {
-        // Already playing this game, just show the arena
-        showGameArena();
-        renderCurrentGame();
-        updateUI();
-        return;
-      }
-      gameState.currentGame = game;
-      gameState.winner = null;
-      gameState.currentPlayer = 'blue';
-      gameState.chatMessages = [];
-      initGameBoard(game);
-      showGameArena();
-      renderCurrentGame();
-      updateUI();
-      renderChat();
-    }
 
     function initGameBoard(game) {
       switch (game) {
@@ -1772,19 +1689,19 @@
 
     function renderConnect4() {
       const ROWS = 6, COLS = 7;
-      let html = '<div class="board-wrapper"><div class="board">';
+      let html = '<div class="board-wrapper"><div class="c4-board">';
       for (let i = 0; i < ROWS * COLS; i++) {
         const val = gameState.connect4.board[i];
-        let cls = 'cell';
+        let cls = 'c4-cell';
         if (val === 'blue') cls += ' blue taken';
         if (val === 'pink') cls += ' pink taken';
         if (gameState.connect4.winningCells.includes(i)) cls += ' winning';
-        html += `<div class="${cls}" data-index="${i}" data-col="${i % COLS}"></div>`;
+        html += `<div class="${cls}" data-index="${i}"></div>`;
       }
       html += '</div></div>';
       boardContainer.innerHTML = html;
       
-      boardContainer.querySelectorAll('.cell').forEach(cell => {
+      boardContainer.querySelectorAll('.c4-cell').forEach(cell => {
         cell.addEventListener('click', () => handleConnect4Click(cell));
       });
     }
@@ -1796,11 +1713,11 @@
       if (gameState.connect4.board[index] !== '') return;
       
       const col = index % 7;
-      sendAction('makeMove', { game: 'connect4', col: col, player: gameState.myColor });
-      // Optimistically process locally (host will sync)
       if (multiplayerState.isHost) {
         processConnect4Move(col, gameState.myColor);
         sendGameState();
+      } else {
+        sendAction('makeMove', { game: 'connect4', col: col, player: gameState.myColor });
       }
     }
 
@@ -1818,7 +1735,7 @@
       if (winInfo) {
         gameState.winner = playerColor;
         gameState.connect4.winningCells = winInfo;
-        setTimeout(() => burstHearts(winInfo, boardContainer), 300);
+        setTimeout(() => burstHearts(), 300);
       } else if (gameState.connect4.board.every(c => c !== '')) {
         gameState.winner = 'draw';
       } else {
@@ -1881,10 +1798,11 @@
       const index = parseInt(cell.dataset.index);
       if (gameState.tictactoe.board[index] !== '') return;
       
-      sendAction('makeMove', { game: 'tictactoe', index: index, player: gameState.myColor });
       if (multiplayerState.isHost) {
         processTicTacToeMove(index, gameState.myColor);
         sendGameState();
+      } else {
+        sendAction('makeMove', { game: 'tictactoe', index: index, player: gameState.myColor });
       }
     }
 
@@ -1904,7 +1822,7 @@
             gameState.tictactoe.board[c] === player) {
           gameState.winner = player;
           gameState.tictactoe.winningCells = line;
-          setTimeout(() => burstHearts(line, boardContainer), 300);
+          setTimeout(() => burstHearts(), 300);
           return;
         }
       }
@@ -1923,7 +1841,6 @@
       const emojis = ['💖', '🌸', '🦋', '🌺', '💕', '🐻', '🌷', '💝'];
       const cards = [];
       emojis.forEach(e => { cards.push({ emoji: e }); cards.push({ emoji: e }); });
-      // Shuffle
       for (let i = cards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -1938,15 +1855,17 @@
       let html = '<div class="memory-board">';
       gameState.memory.cards.forEach((card, i) => {
         let cls = 'memory-card';
-        if (card.flipped) cls += ' flipped';
+        if (card.flipped || card.matched) cls += ' flipped';
         if (card.matched) {
           cls += ' matched';
-          if (card.matchedBy === 'blue') cls += ' blue-matched';
-          if (card.matchedBy === 'pink') cls += ' pink-matched';
+          if (card.matchedBy === 'blue') cls += ' matched-blue';
+          if (card.matchedBy === 'pink') cls += ' matched-pink';
         }
         html += `<div class="${cls}" data-index="${i}">
-          <div class="card-front">💝</div>
-          <div class="card-back">${card.emoji}</div>
+          <div class="card-inner">
+            <div class="card-face card-front">💝</div>
+            <div class="card-face card-back">${card.emoji}</div>
+          </div>
         </div>`;
       });
       html += '</div>';
@@ -1959,16 +1878,23 @@
 
     function handleMemoryClick(cardEl) {
       if (gameState.winner || !multiplayerState.gameStarted) return;
+      if (gameState.memory.lockBoard) return;
       const index = parseInt(cardEl.dataset.index);
       const card = gameState.memory.cards[index];
       if (card.flipped || card.matched) return;
       if (gameState.memory.flippedIndices.length >= 2) return;
-      if (gameState.memory.lockBoard) return;
       
-      sendAction('makeMove', { game: 'memory', index: index, player: gameState.myColor });
       if (multiplayerState.isHost) {
         processMemoryMove(index, gameState.myColor);
+        renderCurrentGame();
+        updateUI();
         sendGameState();
+      } else {
+        // Optimistic UI
+        card.flipped = true;
+        gameState.memory.flippedIndices.push(index);
+        renderMemory();
+        sendAction('makeMove', { game: 'memory', index: index, player: gameState.myColor });
       }
     }
 
@@ -1986,24 +1912,22 @@
         const cardB = mem.cards[b];
         
         if (cardA.emoji === cardB.emoji) {
-          // Match!
           cardA.matched = true;
           cardB.matched = true;
           cardA.matchedBy = player;
           cardB.matchedBy = player;
           mem.flippedIndices = [];
-          // Check if all matched
+          
           if (mem.cards.every(c => c.matched)) {
-            // Count matches per player
             const blueCount = mem.cards.filter(c => c.matchedBy === 'blue').length;
             const pinkCount = mem.cards.filter(c => c.matchedBy === 'pink').length;
             if (blueCount > pinkCount) gameState.winner = 'blue';
             else if (pinkCount > blueCount) gameState.winner = 'pink';
             else gameState.winner = 'draw';
+            setTimeout(() => burstHearts(), 300);
           }
-          // Player continues their turn on match
+          // Player continues on match
         } else {
-          // No match - lock briefly then flip back
           mem.lockBoard = true;
           setTimeout(() => {
             cardA.flipped = false;
@@ -2011,7 +1935,7 @@
             mem.flippedIndices = [];
             mem.lockBoard = false;
             gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
-            renderMemory();
+            renderCurrentGame();
             updateUI();
             if (multiplayerState.isHost) sendGameState();
           }, 1200);
@@ -2024,15 +1948,13 @@
     // ============================================
 
     function initDotsBoxes() {
-      const size = 4; // 4x4 boxes, 5x5 dots
+      const size = 4;
       const lines = [];
-      // Horizontal lines: 5 rows (0-4) x 4 cols (0-3)
       for (let r = 0; r < size + 1; r++) {
         for (let c = 0; c < size; c++) {
           lines.push({ type: 'h', row: r, col: c, owner: null });
         }
       }
-      // Vertical lines: 4 rows x 5 cols
       for (let r = 0; r < size; r++) {
         for (let c = 0; c < size + 1; c++) {
           lines.push({ type: 'v', row: r, col: c, owner: null });
@@ -2052,35 +1974,31 @@
     function renderDotsBoxes() {
       const size = gameState.dotsboxes.boardSize;
       const gridSize = size * 2 + 1;
-      let html = `<div class="dots-board" style="grid-template-columns: repeat(${gridSize}, 1fr); grid-template-rows: repeat(${gridSize}, 1fr);">`;
+      let html = '<div class="db-board">';
       
       for (let gr = 0; gr < gridSize; gr++) {
         for (let gc = 0; gc < gridSize; gc++) {
           if (gr % 2 === 0 && gc % 2 === 0) {
-            // Dot
-            html += `<div class="dot"></div>`;
+            html += `<div class="db-dot"></div>`;
           } else if (gr % 2 === 0 && gc % 2 === 1) {
-            // Horizontal line
             const row = gr / 2;
             const col = (gc - 1) / 2;
             const line = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === row && l.col === col);
-            let cls = 'line line-h';
+            let cls = 'db-line line-h';
             if (line && line.owner) cls += ' ' + line.owner;
             html += `<div class="${cls}" data-type="h" data-row="${row}" data-col="${col}"></div>`;
           } else if (gr % 2 === 1 && gc % 2 === 0) {
-            // Vertical line
             const row = (gr - 1) / 2;
             const col = gc / 2;
             const line = gameState.dotsboxes.lines.find(l => l.type === 'v' && l.row === row && l.col === col);
-            let cls = 'line line-v';
+            let cls = 'db-line line-v';
             if (line && line.owner) cls += ' ' + line.owner;
             html += `<div class="${cls}" data-type="v" data-row="${row}" data-col="${col}"></div>`;
           } else {
-            // Box
             const row = (gr - 1) / 2;
             const col = (gc - 1) / 2;
             const box = gameState.dotsboxes.boxes.find(b => b.row === row && b.col === col);
-            let cls = 'box';
+            let cls = 'db-box';
             if (box && box.owner) cls += ' ' + box.owner;
             html += `<div class="${cls}"></div>`;
           }
@@ -2090,7 +2008,7 @@
       html += '</div>';
       boardContainer.innerHTML = html;
       
-      boardContainer.querySelectorAll('.line').forEach(lineEl => {
+      boardContainer.querySelectorAll('.db-line').forEach(lineEl => {
         lineEl.addEventListener('click', () => handleLineClick(lineEl));
       });
     }
@@ -2105,10 +2023,13 @@
       const line = gameState.dotsboxes.lines.find(l => l.type === type && l.row === row && l.col === col);
       if (!line || line.owner) return;
       
-      sendAction('makeMove', { game: 'dotsboxes', type, row, col, player: gameState.myColor });
       if (multiplayerState.isHost) {
         processLineMove(type, row, col, gameState.myColor);
+        renderCurrentGame();
+        updateUI();
         sendGameState();
+      } else {
+        sendAction('makeMove', { game: 'dotsboxes', type, row, col, player: gameState.myColor });
       }
     }
 
@@ -2117,13 +2038,9 @@
       if (!line || line.owner) return;
       line.owner = player;
       
-      // Check if any box was completed
       let boxesCompleted = 0;
-      const size = gameState.dotsboxes.boardSize;
-      
       gameState.dotsboxes.boxes.forEach(box => {
         if (box.owner) return;
-        // Check all 4 sides
         const top = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === box.row && l.col === box.col);
         const bottom = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === box.row + 1 && l.col === box.col);
         const left = gameState.dotsboxes.lines.find(l => l.type === 'v' && l.row === box.row && l.col === box.col);
@@ -2135,18 +2052,17 @@
         }
       });
       
-      // If no box completed, switch turn
       if (boxesCompleted === 0) {
         gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
       }
       
-      // Check if game over
       if (gameState.dotsboxes.boxes.every(b => b.owner)) {
         const blueBoxes = gameState.dotsboxes.boxes.filter(b => b.owner === 'blue').length;
         const pinkBoxes = gameState.dotsboxes.boxes.filter(b => b.owner === 'pink').length;
         if (blueBoxes > pinkBoxes) gameState.winner = 'blue';
         else if (pinkBoxes > blueBoxes) gameState.winner = 'pink';
         else gameState.winner = 'draw';
+        setTimeout(() => burstHearts(), 300);
       }
     }
 
@@ -2181,7 +2097,6 @@
       
       renderCurrentGame();
       updateUI();
-      if (gameState.winner) setTimeout(showGameOver, 900);
     }
 
     // ============================================
@@ -2201,7 +2116,9 @@
         turnIndicator.style.background = 'var(--primary-color)';
         turnIndicator.style.color = 'white';
         resetBtn.style.display = 'inline-block';
-        setTimeout(showGameOver, 600);
+        if (gameOverScreen.classList.contains('hidden')) {
+          setTimeout(showGameOver, 600);
+        }
       } else {
         if (gameState.currentPlayer === gameState.myColor) {
           turnIndicator.textContent = "Your Turn! 👆";
@@ -2217,7 +2134,7 @@
     }
 
     function showGameOver() {
-      if (gameOverScreen.classList.contains('hidden') === false) return;
+      if (!gameOverScreen.classList.contains('hidden')) return;
       gameOverScreen.classList.remove('hidden');
       
       if (gameState.winner === 'draw') {
@@ -2231,11 +2148,7 @@
         winnerMessage.textContent = "You won, Mahal! I knew you would. You're my champion. I love you so much! Get better soon! 💖";
       }
       
-      if (gameState.winner !== 'draw' && gameState.winner !== gameState.myColor) {
-        // Mahal won
-      }
-      
-      burstHearts([0, 7, 14, 21, 28, 35], boardContainer);
+      burstHearts();
     }
 
     // ============================================
@@ -2272,29 +2185,23 @@
     // HEART BURST
     // ============================================
 
-    function burstHearts(indices, container) {
+    function burstHearts() {
       const heartEmojis = ['💖', '💕', '💗', '❤️', '💘', '🌸'];
-      const elements = container ? container.querySelectorAll('.cell, .ttt-cell') : [];
+      const rect = { left: window.innerWidth / 2, top: window.innerHeight / 2 };
       
-      indices.forEach((idx, i) => {
-        const el = elements[idx] || null;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        
-        for (let j = 0; j < 6; j++) {
-          setTimeout(() => {
-            const heart = document.createElement('div');
-            heart.className = 'heart-burst';
-            heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-            heart.style.left = (rect.left + rect.width / 2) + 'px';
-            heart.style.top = (rect.top + rect.height / 2) + 'px';
-            heart.style.setProperty('--tx', (Math.random() - 0.5) * 300 + 'px');
-            heart.style.setProperty('--ty', (-150 - Math.random() * 200) + 'px');
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 1500);
-          }, j * 80 + i * 100);
-        }
-      });
+      for (let j = 0; j < 20; j++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart-burst';
+          heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+          heart.style.left = (rect.left - 15) + 'px';
+          heart.style.top = (rect.top - 15) + 'px';
+          heart.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px');
+          heart.style.setProperty('--ty', (-100 - Math.random() * 300) + 'px');
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), 1500);
+        }, j * 50);
+      }
     }
 
     // ============================================
@@ -2335,6 +2242,7 @@
 
     startBtn.addEventListener('click', () => {
       startScreen.classList.add('hidden');
+      multiplayerState.gameStarted = true;
     });
 
     resetBtn.addEventListener('click', () => {
@@ -2369,6 +2277,7 @@
     backBtn.addEventListener('click', () => {
       gameState.currentGame = null;
       gameState.winner = null;
+      gameState.chatMessages = [];
       showGameHub();
       if (multiplayerState.isHost) sendGameState();
       else sendAction('backToHub');
@@ -2379,17 +2288,13 @@
       if (e.key === 'Enter') sendChat();
     });
 
-    // KEY FIX: Handle tab visibility change
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        // App came back to foreground
         if (multiplayerState.conn && multiplayerState.isConnected) {
-          // Send a ping to test connection
           try {
             multiplayerState.conn.send({ type: 'ping', t: Date.now() });
             hideReconnectBanner();
           } catch (e) {
-            // Connection is dead, attempt reconnect
             if (multiplayerState.remotePlayer) {
               multiplayerState.isConnected = false;
               updateConnectionStatus('connecting', 'Reconnecting...');
@@ -2398,7 +2303,6 @@
             }
           }
         } else if (multiplayerState.remotePlayer && !multiplayerState.intentionalClose) {
-          // We were connected before, try to reconnect
           updateConnectionStatus('connecting', 'Reconnecting...');
           showReconnectBanner();
           attemptReconnect();
@@ -2406,7 +2310,6 @@
       }
     });
 
-    // Prevent double-tap zoom
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (e) => {
       const now = Date.now();
@@ -2417,26 +2320,6 @@
     // ============================================
     // INIT
     // ============================================
-
-    gameState.myColor = 'blue';
-    gameState.opponentColor = 'pink';
-
-    // Set myColor based on role after connection
-    const originalSetupConnection = setupConnection;
-    setupConnection = function(conn) {
-      originalSetupConnection(conn);
-      gameState.myColor = multiplayerState.playerIndex === 0 ? 'blue' : 'pink';
-      gameState.opponentColor = multiplayerState.playerIndex === 0 ? 'pink' : 'blue';
-      
-      // Update tags
-      if (multiplayerState.playerIndex === 0) {
-        tagBlue.textContent = '💙 You';
-        tagPink.textContent = 'Mahal 💖';
-      } else {
-        tagBlue.textContent = '💙 Me';
-        tagPink.textContent = 'You 💖';
-      }
-    };
 
     initializeMultiplayer();
   </script>
