@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#292F36">
-  <title>Connect 4 Love 💖 - Mahal vs. Me</title>
+  <title>Love Arcade 💖 - Mahal vs. Me</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap');
     
@@ -51,18 +51,22 @@
       align-items: center;
       padding: 12px 12px 20px;
       background: rgba(41, 47, 54, 0.95);
-      border-radius: 0;
       width: 100%;
       max-width: 500px;
       height: 100dvh;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
+    /* ============================================ */
+    /* GAME HEADER                                  */
+    /* ============================================ */
     .game-header {
       width: 100%;
       text-align: center;
       flex-shrink: 0;
+      position: relative;
     }
 
     .game-title {
@@ -163,10 +167,6 @@
       box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
     }
 
-    .mp-btn.primary:active {
-      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
-    }
-
     .host-info {
       display: none;
       background: rgba(0,0,0,0.4);
@@ -253,6 +253,76 @@
     }
 
     /* ============================================ */
+    /* GAME HUB - Game Selection                    */
+    /* ============================================ */
+    #game-hub {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .hub-title {
+      font-size: 1.1rem;
+      color: var(--accent-color);
+      text-align: center;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+
+    .game-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 18px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid rgba(255,255,255,0.1);
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .game-card:active {
+      transform: scale(0.96);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .game-card.active {
+      border-color: var(--accent-color);
+      background: rgba(255, 230, 109, 0.15);
+      box-shadow: 0 0 15px rgba(255, 230, 109, 0.3);
+    }
+
+    .game-card .game-emoji {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .game-card .game-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--light-color);
+    }
+
+    .game-card .game-desc {
+      font-size: 0.7rem;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    /* ============================================ */
     /* GAME ARENA                                   */
     /* ============================================ */
     #game-arena {
@@ -262,7 +332,42 @@
       width: 100%;
       flex: 1;
       min-height: 0;
-      overflow: hidden;
+    }
+
+    .arena-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.1);
+      color: var(--light-color);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 36px;
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .arena-title {
+      font-size: 1rem;
+      color: var(--accent-color);
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
     }
 
     .status-bar {
@@ -324,8 +429,10 @@
     }
 
     /* ============================================ */
-    /* BOARD - Mobile Optimized                     */
+    /* GAME BOARDS                                  */
     /* ============================================ */
+
+    /* === CONNECT 4 === */
     .board-wrapper {
       position: relative;
       width: 100%;
@@ -376,7 +483,6 @@
       cursor: not-allowed;
     }
 
-    /* Piece Drop Animation */
     .cell.blue {
       background: radial-gradient(circle at 30% 30%, #ff9a9e, var(--player1-color));
       box-shadow: 
@@ -394,24 +500,12 @@
     }
 
     @keyframes dropIn {
-      0% { 
-        transform: translateY(-500%) scale(0.7); 
-        opacity: 0;
-      }
-      60% { 
-        transform: translateY(8%) scale(1.1); 
-        opacity: 1;
-      }
-      80% {
-        transform: translateY(-4%) scale(0.98);
-      }
-      100% { 
-        transform: translateY(0) scale(1); 
-        opacity: 1;
-      }
+      0% { transform: translateY(-500%) scale(0.7); opacity: 0; }
+      60% { transform: translateY(8%) scale(1.1); opacity: 1; }
+      80% { transform: translateY(-4%) scale(0.98); }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
     }
 
-    /* Winning Cells */
     .cell.winning {
       animation: winPulse 0.8s infinite;
       border: 3px solid gold;
@@ -419,33 +513,248 @@
     }
 
     @keyframes winPulse {
-      0%, 100% { 
-        transform: scale(1); 
-        box-shadow: 0 0 15px gold, 0 0 30px gold;
-      }
-      50% { 
-        transform: scale(1.12); 
-        box-shadow: 0 0 25px gold, 0 0 50px gold;
-      }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px gold, 0 0 30px gold; }
+      50% { transform: scale(1.12); box-shadow: 0 0 25px gold, 0 0 50px gold; }
     }
 
-    /* Column Preview Heart */
-    .column-preview {
+    /* === TIC TAC TOE === */
+    .ttt-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.1);
+      aspect-ratio: 1;
+    }
+
+    .ttt-cell {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 3rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+      color: var(--dark-color);
+      user-select: none;
+    }
+
+    .ttt-cell:active:not(.taken) {
+      transform: scale(0.95);
+      background: #e0e0e0;
+    }
+
+    .ttt-cell.taken {
+      cursor: not-allowed;
+    }
+
+    .ttt-cell.blue {
+      background: radial-gradient(circle at 30% 30%, #ffd0d0, #ffb3b3);
+      color: var(--player1-color);
+      animation: popIn 0.35s cubic-bezier(0.25, 1.5, 0.5, 1);
+    }
+
+    .ttt-cell.pink {
+      background: radial-gradient(circle at 30% 30%, #c8f0ed, #a1e8e0);
+      color: var(--player2-color);
+      animation: popIn 0.35s cubic-bezier(0.25, 1.5, 0.5, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .ttt-cell.winning {
+      animation: winPulse 0.8s infinite;
+      border: 3px solid gold;
+      z-index: 5;
+    }
+
+    /* === MEMORY MATCH === */
+    .memory-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+
+    .memory-card {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .memory-card:active:not(.flipped):not(.matched) {
+      transform: scale(0.95);
+    }
+
+    .memory-card .card-front,
+    .memory-card .card-back {
       position: absolute;
-      top: -30px;
-      font-size: 1.2rem;
-      color: var(--accent-color);
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-      z-index: 10;
-      text-shadow: 0 0 10px var(--accent-color);
-      animation: heartFloat 1s infinite;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      backface-visibility: hidden;
     }
 
-    @keyframes heartFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+    .memory-card .card-front {
+      background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .memory-card .card-back {
+      background: rgba(255, 255, 255, 0.95);
+      transform: rotateY(180deg);
+      font-size: 1.8rem;
+    }
+
+    .memory-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.matched {
+      animation: matchPulse 0.6s ease;
+      opacity: 0.7;
+      transform: rotateY(180deg);
+    }
+
+    .memory-card.blue-matched .card-back {
+      background: radial-gradient(circle, #ffd0d0, #ffb3b3);
+    }
+
+    .memory-card.pink-matched .card-back {
+      background: radial-gradient(circle, #c8f0ed, #a1e8e0);
+    }
+
+    @keyframes matchPulse {
+      0%, 100% { transform: rotateY(180deg) scale(1); }
+      50% { transform: rotateY(180deg) scale(1.15); }
+    }
+
+    .memory-card.matched-blue {
+      box-shadow: 0 0 15px var(--player1-color);
+    }
+
+    .memory-card.matched-pink {
+      box-shadow: 0 0 15px var(--player2-color);
+    }
+
+    /* === DOTS AND BOXES === */
+    .dots-board {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto 12px;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.1);
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 2px;
+    }
+
+    .dot {
+      width: 100%;
+      height: 100%;
+      background: var(--light-color);
+      border-radius: 50%;
+      align-self: center;
+      justify-self: center;
+      max-width: 10px;
+      max-height: 10px;
+    }
+
+    .line {
+      background: rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 3px;
+    }
+
+    .line:hover {
+      background: rgba(255, 230, 109, 0.4);
+    }
+
+    .line.line-h {
+      height: 6px;
+      align-self: center;
+      width: 100%;
+    }
+
+    .line.line-v {
+      width: 6px;
+      justify-self: center;
+      height: 100%;
+    }
+
+    .line.blue {
+      background: var(--player1-color);
+      box-shadow: 0 0 8px var(--player1-color);
+    }
+
+    .line.pink {
+      background: var(--player2-color);
+      box-shadow: 0 0 8px var(--player2-color);
+    }
+
+    .box {
+      background: transparent;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.7rem;
+    }
+
+    .box.blue {
+      background: rgba(255, 107, 107, 0.4);
+      animation: boxClaim 0.4s ease;
+    }
+
+    .box.pink {
+      background: rgba(78, 205, 196, 0.4);
+      animation: boxClaim 0.4s ease;
+    }
+
+    @keyframes boxClaim {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     /* ============================================ */
@@ -458,6 +767,7 @@
       width: 100%;
       flex-shrink: 0;
       max-width: 440px;
+      margin-top: 10px;
     }
 
     .chat-title {
@@ -579,13 +889,13 @@
 
     .btn:active {
       transform: scale(0.96);
-      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
     }
 
     #resetBtn {
       max-width: 220px;
       padding: 12px 20px;
       font-size: 0.9rem;
+      margin-top: 8px;
     }
 
     /* ============================================ */
@@ -662,7 +972,7 @@
     }
 
     /* ============================================ */
-    /* FLOATING HEARTS BACKGROUND                   */
+    /* FLOATING HEARTS                              */
     /* ============================================ */
     .heart-bg {
       position: fixed;
@@ -711,7 +1021,7 @@
     .heart-bg span:nth-child(5) { left: 90%; animation-duration: 24s; animation-delay: 8s; }
 
     /* ============================================ */
-    /* HEART BURST (celebration)                    */
+    /* HEART BURST                                  */
     /* ============================================ */
     .heart-burst {
       position: fixed;
@@ -733,7 +1043,30 @@
     }
 
     /* ============================================ */
-    /* RESPONSIVE - Small phones                    */
+    /* RECONNECTING BANNER                          */
+    /* ============================================ */
+    .reconnect-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, #f1c40f, #e67e22);
+      color: var(--dark-color);
+      padding: 8px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      z-index: 500;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .reconnect-banner.visible {
+      transform: translateY(0);
+    }
+
+    /* ============================================ */
+    /* RESPONSIVE                                   */
     /* ============================================ */
     @media (max-width: 380px) {
       .game-title { font-size: 1.2rem; }
@@ -748,24 +1081,23 @@
       .bear-gif { width: 90px; }
       .chat-messages { height: 50px; }
       .mp-btn { font-size: 0.85rem; padding: 12px 16px; }
+      .ttt-cell { font-size: 2.2rem; }
+      .game-card { padding: 14px 8px; min-height: 95px; }
+      .game-card .game-emoji { font-size: 1.6rem; }
+      .game-card .game-name { font-size: 0.75rem; }
+      .memory-card .card-back { font-size: 1.4rem; }
     }
 
     @media (max-height: 700px) {
       .chat-messages { height: 45px; }
       .bear-gif { width: 80px; }
-      .game-subtitle { margin-bottom: 6px; }
-      .board-wrapper { margin-bottom: 8px; }
-    }
-
-    /* Landscape phones */
-    @media (max-height: 500px) and (orientation: landscape) {
-      .board-wrapper { max-width: 320px; }
-      .game-title { font-size: 1rem; }
-      .chat-container { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Reconnecting banner -->
+  <div class="reconnect-banner" id="reconnectBanner">🔄 Reconnecting... Please wait</div>
 
   <!-- Floating Hearts Background -->
   <div class="heart-bg">
@@ -774,7 +1106,7 @@
 
   <div id="game-container">
     <div class="game-header">
-      <h1 class="game-title">Connect 4 Love 💖</h1>
+      <h1 class="game-title">Love Arcade 💖</h1>
       <p class="game-subtitle">Mahal vs. Me</p>
     </div>
 
@@ -782,7 +1114,7 @@
     <div class="multiplayer-section" id="mp-section">
       <div class="connection-status status-disconnected" id="connection-status">Disconnected</div>
 
-      <button class="mp-btn primary" id="host-game">🎮 Host Game (You Play First)</button>
+      <button class="mp-btn primary" id="host-game">🎮 Host Game</button>
 
       <div class="host-info" id="host-info">
         <p>Share this ID with Mahal:</p>
@@ -796,19 +1128,49 @@
       </div>
     </div>
 
-    <!-- Game Arena (Hidden Until Connected) -->
+    <!-- GAME HUB -->
+    <div id="game-hub">
+      <div class="hub-title">🎮 Pick a Game, Mahal! 💖</div>
+      <div class="game-grid">
+        <div class="game-card" data-game="connect4">
+          <div class="game-emoji">🔴</div>
+          <div class="game-name">Connect 4</div>
+          <div class="game-desc">Get 4 in a row!</div>
+        </div>
+        <div class="game-card" data-game="tictactoe">
+          <div class="game-emoji">⭕</div>
+          <div class="game-name">Tic-Tac-Toe</div>
+          <div class="game-desc">Classic 3x3</div>
+        </div>
+        <div class="game-card" data-game="memory">
+          <div class="game-emoji">🃏</div>
+          <div class="game-name">Memory Match</div>
+          <div class="game-desc">Find the pairs!</div>
+        </div>
+        <div class="game-card" data-game="dotsboxes">
+          <div class="game-emoji">🔷</div>
+          <div class="game-name">Dots & Boxes</div>
+          <div class="game-desc">Claim the boxes!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME ARENA -->
     <div id="game-arena">
+      <div class="arena-header">
+        <button class="back-btn" id="backBtn">← Back</button>
+        <div class="arena-title" id="arenaTitle">Connect 4</div>
+        <button class="back-btn" id="hubRefreshBtn" style="visibility: hidden;">🔄</button>
+      </div>
+
       <div class="status-bar">
         <div class="player-tag blue" id="tagBlue">💙 You</div>
         <div class="turn-indicator" id="turnIndicator">Waiting...</div>
         <div class="player-tag pink" id="tagPink">Mahal 💖</div>
       </div>
 
-      <div class="board-wrapper">
-        <div class="board" id="board">
-          <!-- 42 cells generated by JS -->
-        </div>
-      </div>
+      <!-- Board Container -->
+      <div id="boardContainer"></div>
 
       <button class="btn" id="resetBtn" style="display: none;">Next Round 💕</button>
 
@@ -828,8 +1190,8 @@
   <div class="overlay" id="startScreen">
     <img src="https://media.giphy.com/media/1d7F9xyq6j7C1ojbC5/giphy.gif" alt="Cute Bear" class="bear-gif">
     <h1>Get Well Soon, Mahal! 💖</h1>
-    <p>Since you need to rest, let's play Connect 4 together! One of us hosts, the other joins with the ID.</p>
-    <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">You (💙) play first. First to get 4 in a row wins!</p>
+    <p>Since you need to rest, let's play some games together! One of us hosts, the other joins with the ID.</p>
+    <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Choose from 4 cute games to play together! 💕</p>
     <button class="btn" id="startBtn" style="margin-top: 20px;">Let's Play! 💕</button>
   </div>
 
@@ -841,6 +1203,7 @@
       <p id="winnerMessage">Yay! But honestly, you always win my heart. I love you so much, Mahal! Get better soon! 💖</p>
     </div>
     <button class="btn" id="playAgainBtn" style="margin-top: 20px;">Play Again 🔄</button>
+    <button class="btn" id="backToHubBtn" style="margin-top: 10px; background: linear-gradient(135deg, #666, #444);">🏠 Back to Game Hub</button>
   </div>
 
   <!-- PeerJS Library -->
@@ -848,14 +1211,10 @@
 
   <script>
     // ============================================
-    // CONNECT 4 LOVE - PeerJS Multiplayer Game
-    // Mobile-First Edition
+    // LOVE ARCADE - Multi-Game Multiplayer
     // ============================================
 
-    const ROWS = 6;
-    const COLS = 7;
-
-    // --- Multiplayer State ---
+    // --- Multiplayer State (with auto-reconnect) ---
     const multiplayerState = {
       peer: null,
       conn: null,
@@ -864,15 +1223,42 @@
       peerId: null,
       remotePlayer: null,
       gameStarted: false,
-      playerIndex: 0 // 0 = host (blue), 1 = client (pink)
+      playerIndex: 0,
+      connectionAttempts: 0,
+      heartbeatInterval: null,
+      reconnectTimeout: null,
+      intentionalClose: false,
+      pendingMessages: []
     };
 
-    // --- Game State ---
-    let board = new Array(ROWS * COLS).fill('');
-    let currentPlayer = 'blue';
-    let winner = null;
-    let winningCells = [];
-    let chatMessages = [];
+    // --- Global Game State ---
+    const gameState = {
+      currentGame: null, // 'connect4', 'tictactoe', 'memory', 'dotsboxes'
+      myColor: 'blue', // 'blue' or 'pink'
+      opponentColor: 'pink',
+      currentPlayer: 'blue',
+      winner: null,
+      chatMessages: [],
+      // Per-game boards
+      connect4: {
+        board: new Array(42).fill(''),
+        winningCells: []
+      },
+      tictactoe: {
+        board: new Array(9).fill(''),
+        winningCells: []
+      },
+      memory: {
+        cards: [], // {emoji, flipped, matched, matchedBy}
+        flippedIndices: [],
+        lockBoard: false
+      },
+      dotsboxes: {
+        lines: [], // {type: 'h'|'v', row, col, owner: null}
+        boxes: [], // {row, col, owner: null}
+        boardSize: 4 // 4x4 boxes -> 5x5 dots
+      }
+    };
 
     // --- DOM Elements ---
     const connectionStatusEl = document.getElementById('connection-status');
@@ -883,8 +1269,11 @@
     const joinIdEl = document.getElementById('join-id');
     const mpSection = document.getElementById('mp-section');
     const joinGroup = document.getElementById('join-group');
+    const gameHub = document.getElementById('game-hub');
     const gameArena = document.getElementById('game-arena');
-    const boardEl = document.getElementById('board');
+    const boardContainer = document.getElementById('boardContainer');
+    const arenaTitle = document.getElementById('arenaTitle');
+    const backBtn = document.getElementById('backBtn');
     const turnIndicator = document.getElementById('turnIndicator');
     const tagBlue = document.getElementById('tagBlue');
     const tagPink = document.getElementById('tagPink');
@@ -895,29 +1284,43 @@
     const winnerMessage = document.getElementById('winnerMessage');
     const startBtn = document.getElementById('startBtn');
     const playAgainBtn = document.getElementById('playAgainBtn');
+    const backToHubBtn = document.getElementById('backToHubBtn');
     const chatMessagesEl = document.getElementById('chatMessages');
     const chatInput = document.getElementById('chatInput');
     const chatSendBtn = document.getElementById('chatSendBtn');
+    const reconnectBanner = document.getElementById('reconnectBanner');
 
     // ============================================
-    // MULTIPLAYER (PeerJS)
+    // MULTIPLAYER (PeerJS with Auto-Reconnect)
     // ============================================
 
     function initializeMultiplayer() {
-      multiplayerState.peerId = 'c4love-' + Math.random().toString(36).substring(2, 8);
-      multiplayerState.peer = new Peer(multiplayerState.peerId, {
-        debug: 1,
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:global.stun.twilio.com:3478' }
-          ]
-        }
-      });
+      if (multiplayerState.peer && !multiplayerState.peer.destroyed) {
+        try { multiplayerState.peer.destroy(); } catch (e) {}
+      }
+      
+      multiplayerState.peerId = 'love-arcade-' + Math.random().toString(36).substring(2, 8);
+      multiplayerState.intentionalClose = false;
+      
+      try {
+        multiplayerState.peer = new Peer(multiplayerState.peerId, {
+          debug: 0,
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:global.stun.twilio.com:3478' }
+            ],
+            iceCandidatePoolSize: 10
+          }
+        });
+      } catch (e) {
+        console.error('Failed to create peer:', e);
+        setTimeout(initializeMultiplayer, 2000);
+        return;
+      }
 
       multiplayerState.peer.on('open', (id) => {
         updateConnectionStatus('disconnected', 'Ready to connect');
-        console.log(`Your ID: ${id}`);
       });
 
       multiplayerState.peer.on('connection', (conn) => {
@@ -929,17 +1332,41 @@
         joinGroup.style.display = 'none';
         hostInfoEl.style.display = 'block';
         hostIdEl.textContent = multiplayerState.peerId;
-        setTimeout(startGame, 500);
+        setTimeout(() => {
+          showGameHub();
+          sendGameState();
+        }, 500);
       });
 
       multiplayerState.peer.on('error', (err) => {
-        console.error('PeerJS error:', err);
         if (err.type === 'peer-unavailable') {
           updateConnectionStatus('disconnected', 'Host not found. Check ID.');
+          hideReconnectBanner();
         } else if (err.type === 'unavailable-id') {
           setTimeout(initializeMultiplayer, 500);
-        } else {
-          updateConnectionStatus('disconnected', 'Connection error');
+        } else if (err.type === 'network' || err.type === 'server-error') {
+          showReconnectBanner();
+          setTimeout(() => {
+            if (multiplayerState.isHost) {
+              initializeMultiplayer();
+            }
+          }, 3000);
+        }
+      });
+
+      multiplayerState.peer.on('disconnected', () => {
+        // PeerJS lost connection to signaling server - try to reconnect
+        if (!multiplayerState.intentionalClose) {
+          showReconnectBanner();
+          setTimeout(() => {
+            try {
+              if (multiplayerState.peer && !multiplayerState.peer.destroyed) {
+                multiplayerState.peer.reconnect();
+              }
+            } catch (e) {
+              console.error('Reconnect error:', e);
+            }
+          }, 1500);
         }
       });
     }
@@ -951,10 +1378,16 @@
 
       conn.on('open', () => {
         updateConnectionStatus('connected', '💖 Connected to Mahal!');
+        hideReconnectBanner();
+        multiplayerState.connectionAttempts = 0;
+        startHeartbeat();
+        flushPendingMessages();
         if (multiplayerState.isHost) {
           sendGameState();
         } else {
-          setTimeout(startGame, 500);
+          setTimeout(() => {
+            showGameHub();
+          }, 500);
         }
       });
 
@@ -962,15 +1395,87 @@
         handleIncomingData(data);
       });
 
+      // KEY FIX: Handle close gracefully and try to reconnect
       conn.on('close', () => {
         multiplayerState.isConnected = false;
-        updateConnectionStatus('disconnected', 'Disconnected');
+        updateConnectionStatus('connecting', 'Reconnecting...');
+        showReconnectBanner();
+        stopHeartbeat();
+        attemptReconnect();
       });
 
       conn.on('error', (err) => {
         console.error('Connection error:', err);
-        updateConnectionStatus('disconnected', 'Connection error');
+        // Don't kill the connection on transient errors
       });
+    }
+
+    function attemptReconnect() {
+      if (multiplayerState.intentionalClose) return;
+      if (!multiplayerState.remotePlayer) return;
+      
+      multiplayerState.connectionAttempts++;
+      if (multiplayerState.connectionAttempts > 30) {
+        updateConnectionStatus('disconnected', 'Connection lost. Refresh to try again.');
+        hideReconnectBanner();
+        return;
+      }
+      
+      clearTimeout(multiplayerState.reconnectTimeout);
+      multiplayerState.reconnectTimeout = setTimeout(() => {
+        try {
+          if (multiplayerState.peer && !multiplayerState.peer.destroyed) {
+            const newConn = multiplayerState.peer.connect(multiplayerState.remotePlayer, {
+              reliable: true,
+              metadata: { reconnecting: true }
+            });
+            setupConnection(newConn);
+          } else {
+            // Peer is destroyed, reinitialize
+            initializeMultiplayer();
+            setTimeout(() => {
+              if (multiplayerState.remotePlayer) {
+                const newConn = multiplayerState.peer.connect(multiplayerState.remotePlayer, {
+                  reliable: true,
+                  metadata: { reconnecting: true }
+                });
+                setupConnection(newConn);
+              }
+            }, 1500);
+          }
+        } catch (e) {
+          console.error('Reconnect attempt failed:', e);
+          attemptReconnect();
+        }
+      }, 2000);
+    }
+
+    function startHeartbeat() {
+      stopHeartbeat();
+      multiplayerState.heartbeatInterval = setInterval(() => {
+        if (multiplayerState.isConnected && multiplayerState.conn) {
+          try {
+            multiplayerState.conn.send({ type: 'ping', t: Date.now() });
+          } catch (e) {
+            console.error('Heartbeat failed:', e);
+          }
+        }
+      }, 5000);
+    }
+
+    function stopHeartbeat() {
+      if (multiplayerState.heartbeatInterval) {
+        clearInterval(multiplayerState.heartbeatInterval);
+        multiplayerState.heartbeatInterval = null;
+      }
+    }
+
+    function showReconnectBanner() {
+      reconnectBanner.classList.add('visible');
+    }
+
+    function hideReconnectBanner() {
+      reconnectBanner.classList.remove('visible');
     }
 
     function hostGame() {
@@ -992,14 +1497,24 @@
 
       multiplayerState.isHost = false;
       multiplayerState.playerIndex = 1;
+      multiplayerState.remotePlayer = hostId;
       
       hostGameBtn.style.display = 'none';
       joinGroup.style.display = 'none';
       hostInfoEl.style.display = 'none';
       
       updateConnectionStatus('connecting', 'Connecting to your love...');
-      const conn = multiplayerState.peer.connect(hostId, { reliable: true });
-      setupConnection(conn);
+      
+      const attemptConnect = () => {
+        try {
+          const conn = multiplayerState.peer.connect(hostId, { reliable: true });
+          setupConnection(conn);
+        } catch (e) {
+          console.error('Connect failed:', e);
+          setTimeout(attemptConnect, 2000);
+        }
+      };
+      attemptConnect();
     }
 
     function updateConnectionStatus(status, message) {
@@ -1021,45 +1536,105 @@
     }
 
     function sendGameState() {
-      if (!multiplayerState.isConnected) return;
-      multiplayerState.conn.send({
-        type: 'gameState',
-        state: {
-          board: board,
-          currentPlayer: currentPlayer,
-          winner: winner,
-          winningCells: winningCells,
-          chatMessages: chatMessages
-        },
-        sender: multiplayerState.isHost ? 'host' : 'client'
-      });
+      if (!multiplayerState.isConnected || !multiplayerState.conn) {
+        // Queue the message for when we reconnect
+        multiplayerState.pendingMessages.push({ type: 'state' });
+        return;
+      }
+      try {
+        multiplayerState.conn.send({
+          type: 'gameState',
+          state: serializeState(),
+          sender: multiplayerState.isHost ? 'host' : 'client'
+        });
+      } catch (e) {
+        console.error('Send failed:', e);
+        multiplayerState.pendingMessages.push({ type: 'state' });
+      }
     }
 
     function sendAction(action, data = {}) {
-      if (!multiplayerState.isConnected) return;
-      multiplayerState.conn.send({
-        type: 'action',
-        action: action,
-        data: data,
-        sender: multiplayerState.isHost ? 'host' : 'client'
+      if (!multiplayerState.isConnected || !multiplayerState.conn) {
+        multiplayerState.pendingMessages.push({ type: 'action', action, data });
+        return;
+      }
+      try {
+        multiplayerState.conn.send({
+          type: 'action',
+          action: action,
+          data: data,
+          sender: multiplayerState.isHost ? 'host' : 'client'
+        });
+      } catch (e) {
+        console.error('Send action failed:', e);
+        multiplayerState.pendingMessages.push({ type: 'action', action, data });
+      }
+    }
+
+    function flushPendingMessages() {
+      const queued = multiplayerState.pendingMessages.slice();
+      multiplayerState.pendingMessages = [];
+      queued.forEach(msg => {
+        if (msg.type === 'state') sendGameState();
+        else if (msg.type === 'action') sendAction(msg.action, msg.data);
       });
     }
 
+    function serializeState() {
+      return {
+        currentGame: gameState.currentGame,
+        currentPlayer: gameState.currentPlayer,
+        winner: gameState.winner,
+        chatMessages: gameState.chatMessages,
+        connect4: {
+          board: gameState.connect4.board,
+          winningCells: gameState.connect4.winningCells
+        },
+        tictactoe: {
+          board: gameState.tictactoe.board,
+          winningCells: gameState.tictactoe.winningCells
+        },
+        memory: {
+          cards: gameState.memory.cards,
+          flippedIndices: gameState.memory.flippedIndices
+        },
+        dotsboxes: {
+          lines: gameState.dotsboxes.lines,
+          boxes: gameState.dotsboxes.boxes
+        }
+      };
+    }
+
+    function applyState(state) {
+      gameState.currentGame = state.currentGame;
+      gameState.currentPlayer = state.currentPlayer;
+      gameState.winner = state.winner;
+      gameState.chatMessages = state.chatMessages || [];
+      if (state.connect4) Object.assign(gameState.connect4, state.connect4);
+      if (state.tictactoe) Object.assign(gameState.tictactoe, state.tictactoe);
+      if (state.memory) Object.assign(gameState.memory, state.memory);
+      if (state.dotsboxes) Object.assign(gameState.dotsboxes, state.dotsboxes);
+    }
+
     function handleIncomingData(data) {
+      if (data.type === 'ping') {
+        if (multiplayerState.conn) {
+          try { multiplayerState.conn.send({ type: 'pong' }); } catch(e) {}
+        }
+        return;
+      }
+      if (data.type === 'pong') return;
+
       switch (data.type) {
         case 'gameState':
           if (!multiplayerState.isHost && data.sender === 'host') {
-            const prevBoard = board.slice();
-            board = data.state.board;
-            currentPlayer = data.state.currentPlayer;
-            winner = data.state.winner;
-            winningCells = data.state.winningCells || [];
-            chatMessages = data.state.chatMessages || [];
-            renderBoard(prevBoard);
-            renderChat();
-            updateUI();
-            if (winner && !gameOverScreen.classList.contains('hidden') === false) {
-              setTimeout(showGameOver, 600);
+            applyState(data.state);
+            if (gameState.currentGame) {
+              renderCurrentGame();
+              renderChat();
+              updateUI();
+            } else {
+              showGameHub();
             }
           }
           break;
@@ -1073,152 +1648,203 @@
 
     function handleRemoteAction(action, data) {
       switch (action) {
+        case 'selectGame':
+          if (gameState.currentGame !== data.game) {
+            gameState.currentGame = data.game;
+            gameState.winner = null;
+            gameState.currentPlayer = 'blue';
+            initGameBoard(data.game);
+            renderCurrentGame();
+            updateUI();
+          }
+          break;
         case 'makeMove':
           if (multiplayerState.isHost) {
-            makeMove(data.col, data.playerIndex);
+            processMove(data);
             sendGameState();
+          } else {
+            processMove(data);
           }
           break;
         case 'chat':
-          chatMessages.push(data.message);
-          if (chatMessages.length > 30) chatMessages = chatMessages.slice(-30);
+          gameState.chatMessages.push(data.message);
+          if (gameState.chatMessages.length > 30) gameState.chatMessages = gameState.chatMessages.slice(-30);
           renderChat();
-          if (multiplayerState.isHost) {
-            sendGameState();
-          }
+          if (multiplayerState.isHost) sendGameState();
           break;
         case 'restart':
           if (multiplayerState.isHost) {
-            resetGame();
+            resetCurrentGame();
             sendGameState();
           }
           break;
-      }
-    }
-
-    // ============================================
-    // GAME LOGIC
-    // ============================================
-
-    function initBoard() {
-      boardEl.innerHTML = '';
-      for (let i = 0; i < ROWS * COLS; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.index = i;
-        cell.dataset.col = i % COLS;
-        
-        // Tap handler
-        cell.addEventListener('click', () => handleCellClick(i));
-        
-        // Hover preview for desktop
-        cell.addEventListener('mouseenter', () => showColumnPreview(i % COLS));
-        cell.addEventListener('mouseleave', hideColumnPreview);
-        
-        boardEl.appendChild(cell);
-      }
-    }
-
-    function showColumnPreview(col) {
-      if (winner || !multiplayerState.gameStarted) return;
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
-      if (currentPlayer !== myColor) return;
-      
-      // Find topmost cell in this column
-      let topIndex = -1;
-      for (let row = 0; row < ROWS; row++) {
-        const idx = row * COLS + col;
-        if (board[idx] === '') {
-          topIndex = idx;
+        case 'backToHub':
+          gameState.currentGame = null;
+          gameState.winner = null;
+          gameState.chatMessages = [];
+          showGameHub();
           break;
-        }
       }
-      if (topIndex === -1) return;
-      
-      // Highlight the target cell
-      boardEl.children[topIndex].style.transform = 'scale(1.1)';
-      boardEl.children[topIndex].style.boxShadow = '0 0 15px var(--accent-color)';
     }
 
-    function hideColumnPreview() {
-      Array.from(boardEl.children).forEach(cell => {
-        cell.style.transform = '';
-        cell.style.boxShadow = '';
+    // ============================================
+    // GAME HUB
+    // ============================================
+
+    function showGameHub() {
+      mpSection.style.display = 'none';
+      gameArena.style.display = 'none';
+      gameHub.style.display = 'flex';
+      gameOverScreen.classList.add('hidden');
+      
+      // Highlight current game if any
+      document.querySelectorAll('.game-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.game === gameState.currentGame);
       });
     }
 
-    function handleCellClick(index) {
-      if (winner || !multiplayerState.gameStarted) return;
-      
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
-      if (currentPlayer !== myColor) return;
-      
-      const col = index % COLS;
-      
-      if (multiplayerState.isHost) {
-        makeMove(col, multiplayerState.playerIndex);
-        sendGameState();
-      } else {
-        sendAction('makeMove', { col: col, playerIndex: multiplayerState.playerIndex });
+    function showGameArena() {
+      mpSection.style.display = 'none';
+      gameHub.style.display = 'none';
+      gameArena.style.display = 'flex';
+    }
+
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const game = card.dataset.game;
+        selectGame(game);
+        if (multiplayerState.isConnected) {
+          sendAction('selectGame', { game: game });
+        }
+      });
+    });
+
+    function selectGame(game) {
+      if (gameState.currentGame === game && gameState.winner === null) {
+        // Already playing this game, just show the arena
+        showGameArena();
+        renderCurrentGame();
+        updateUI();
+        return;
+      }
+      gameState.currentGame = game;
+      gameState.winner = null;
+      gameState.currentPlayer = 'blue';
+      gameState.chatMessages = [];
+      initGameBoard(game);
+      showGameArena();
+      renderCurrentGame();
+      updateUI();
+      renderChat();
+    }
+
+    function initGameBoard(game) {
+      switch (game) {
+        case 'connect4':
+          gameState.connect4.board = new Array(42).fill('');
+          gameState.connect4.winningCells = [];
+          break;
+        case 'tictactoe':
+          gameState.tictactoe.board = new Array(9).fill('');
+          gameState.tictactoe.winningCells = [];
+          break;
+        case 'memory':
+          initMemoryGame();
+          break;
+        case 'dotsboxes':
+          initDotsBoxes();
+          break;
       }
     }
 
-    function makeMove(col, playerIndex) {
-      if (winner) return;
+    function resetCurrentGame() {
+      gameState.winner = null;
+      gameState.currentPlayer = 'blue';
+      initGameBoard(gameState.currentGame);
+      renderCurrentGame();
+      updateUI();
+      gameOverScreen.classList.add('hidden');
+    }
+
+    // ============================================
+    // CONNECT 4
+    // ============================================
+
+    function renderConnect4() {
+      const ROWS = 6, COLS = 7;
+      let html = '<div class="board-wrapper"><div class="board">';
+      for (let i = 0; i < ROWS * COLS; i++) {
+        const val = gameState.connect4.board[i];
+        let cls = 'cell';
+        if (val === 'blue') cls += ' blue taken';
+        if (val === 'pink') cls += ' pink taken';
+        if (gameState.connect4.winningCells.includes(i)) cls += ' winning';
+        html += `<div class="${cls}" data-index="${i}" data-col="${i % COLS}"></div>`;
+      }
+      html += '</div></div>';
+      boardContainer.innerHTML = html;
       
-      let targetIndex = -1;
+      boardContainer.querySelectorAll('.cell').forEach(cell => {
+        cell.addEventListener('click', () => handleConnect4Click(cell));
+      });
+    }
+
+    function handleConnect4Click(cell) {
+      if (gameState.winner || !multiplayerState.gameStarted) return;
+      if (gameState.currentPlayer !== gameState.myColor) return;
+      const index = parseInt(cell.dataset.index);
+      if (gameState.connect4.board[index] !== '') return;
+      
+      const col = index % 7;
+      sendAction('makeMove', { game: 'connect4', col: col, player: gameState.myColor });
+      // Optimistically process locally (host will sync)
+      if (multiplayerState.isHost) {
+        processConnect4Move(col, gameState.myColor);
+        sendGameState();
+      }
+    }
+
+    function processConnect4Move(col, playerColor) {
+      const ROWS = 6, COLS = 7;
+      let target = -1;
       for (let row = ROWS - 1; row >= 0; row--) {
         const idx = row * COLS + col;
-        if (board[idx] === '') {
-          targetIndex = idx;
-          break;
-        }
+        if (gameState.connect4.board[idx] === '') { target = idx; break; }
       }
+      if (target === -1) return;
       
-      if (targetIndex === -1) return;
-      
-      const playerColor = (playerIndex === 0) ? 'blue' : 'pink';
-      board[targetIndex] = playerColor;
-      
-      const winInfo = checkWin(targetIndex, playerColor);
+      gameState.connect4.board[target] = playerColor;
+      const winInfo = checkConnect4Win(target, playerColor);
       if (winInfo) {
-        winner = playerColor;
-        winningCells = winInfo;
-        // Celebration burst
-        setTimeout(() => burstHearts(winInfo), 300);
-      } else if (board.every(cell => cell !== '')) {
-        winner = 'draw';
+        gameState.winner = playerColor;
+        gameState.connect4.winningCells = winInfo;
+        setTimeout(() => burstHearts(winInfo, boardContainer), 300);
+      } else if (gameState.connect4.board.every(c => c !== '')) {
+        gameState.winner = 'draw';
       } else {
-        currentPlayer = (currentPlayer === 'blue') ? 'pink' : 'blue';
-      }
-      
-      renderBoard();
-      updateUI();
-      
-      if (winner) {
-        setTimeout(showGameOver, 900);
+        gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
       }
     }
 
-    function checkWin(index, player) {
+    function checkConnect4Win(index, player) {
+      const ROWS = 6, COLS = 7;
       const row = Math.floor(index / COLS);
       const col = index % COLS;
-      const directions = [[0, 1], [1, 0], [1, 1], [1, -1]];
-      
-      for (const [dr, dc] of directions) {
+      const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+      for (const [dr, dc] of dirs) {
         let cells = [index];
         for (let i = 1; i < 4; i++) {
           const r = row + dr * i, c = col + dc * i;
           if (r < 0 || r >= ROWS || c < 0 || c >= COLS) break;
           const idx = r * COLS + c;
-          if (board[idx] === player) cells.push(idx);
+          if (gameState.connect4.board[idx] === player) cells.push(idx);
           else break;
         }
         for (let i = 1; i < 4; i++) {
           const r = row - dr * i, c = col - dc * i;
           if (r < 0 || r >= ROWS || c < 0 || c >= COLS) break;
           const idx = r * COLS + c;
-          if (board[idx] === player) cells.unshift(idx);
+          if (gameState.connect4.board[idx] === player) cells.unshift(idx);
           else break;
         }
         if (cells.length >= 4) return cells.slice(0, 4);
@@ -1226,45 +1852,358 @@
       return null;
     }
 
-    function renderBoard(prevBoard = null) {
-      const cells = boardEl.children;
-      for (let i = 0; i < cells.length; i++) {
-        const cell = cells[i];
-        const value = board[i];
-        const prevValue = prevBoard ? prevBoard[i] : null;
-        
-        // Only reset classes if state changed
-        if (prevBoard === null || prevValue !== value) {
-          cell.className = 'cell';
-          if (value === 'blue') cell.classList.add('blue', 'taken');
-          if (value === 'pink') cell.classList.add('pink', 'taken');
+    // ============================================
+    // TIC TAC TOE
+    // ============================================
+
+    function renderTicTacToe() {
+      let html = '<div class="ttt-board">';
+      for (let i = 0; i < 9; i++) {
+        const val = gameState.tictactoe.board[i];
+        let cls = 'ttt-cell';
+        let content = '';
+        if (val === 'blue') { cls += ' blue taken'; content = '✕'; }
+        if (val === 'pink') { cls += ' pink taken'; content = '◯'; }
+        if (gameState.tictactoe.winningCells.includes(i)) cls += ' winning';
+        html += `<div class="${cls}" data-index="${i}">${content}</div>`;
+      }
+      html += '</div>';
+      boardContainer.innerHTML = html;
+      
+      boardContainer.querySelectorAll('.ttt-cell').forEach(cell => {
+        cell.addEventListener('click', () => handleTicTacToeClick(cell));
+      });
+    }
+
+    function handleTicTacToeClick(cell) {
+      if (gameState.winner || !multiplayerState.gameStarted) return;
+      if (gameState.currentPlayer !== gameState.myColor) return;
+      const index = parseInt(cell.dataset.index);
+      if (gameState.tictactoe.board[index] !== '') return;
+      
+      sendAction('makeMove', { game: 'tictactoe', index: index, player: gameState.myColor });
+      if (multiplayerState.isHost) {
+        processTicTacToeMove(index, gameState.myColor);
+        sendGameState();
+      }
+    }
+
+    function processTicTacToeMove(index, player) {
+      if (gameState.tictactoe.board[index] !== '') return;
+      gameState.tictactoe.board[index] = player;
+      
+      const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      for (const line of lines) {
+        const [a,b,c] = line;
+        if (gameState.tictactoe.board[a] === player &&
+            gameState.tictactoe.board[b] === player &&
+            gameState.tictactoe.board[c] === player) {
+          gameState.winner = player;
+          gameState.tictactoe.winningCells = line;
+          setTimeout(() => burstHearts(line, boardContainer), 300);
+          return;
         }
+      }
+      if (gameState.tictactoe.board.every(c => c !== '')) {
+        gameState.winner = 'draw';
+      } else {
+        gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
+      }
+    }
+
+    // ============================================
+    // MEMORY MATCH
+    // ============================================
+
+    function initMemoryGame() {
+      const emojis = ['💖', '🌸', '🦋', '🌺', '💕', '🐻', '🌷', '💝'];
+      const cards = [];
+      emojis.forEach(e => { cards.push({ emoji: e }); cards.push({ emoji: e }); });
+      // Shuffle
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      cards.forEach(c => { c.flipped = false; c.matched = false; c.matchedBy = null; });
+      gameState.memory.cards = cards;
+      gameState.memory.flippedIndices = [];
+      gameState.memory.lockBoard = false;
+    }
+
+    function renderMemory() {
+      let html = '<div class="memory-board">';
+      gameState.memory.cards.forEach((card, i) => {
+        let cls = 'memory-card';
+        if (card.flipped) cls += ' flipped';
+        if (card.matched) {
+          cls += ' matched';
+          if (card.matchedBy === 'blue') cls += ' blue-matched';
+          if (card.matchedBy === 'pink') cls += ' pink-matched';
+        }
+        html += `<div class="${cls}" data-index="${i}">
+          <div class="card-front">💝</div>
+          <div class="card-back">${card.emoji}</div>
+        </div>`;
+      });
+      html += '</div>';
+      boardContainer.innerHTML = html;
+      
+      boardContainer.querySelectorAll('.memory-card').forEach(card => {
+        card.addEventListener('click', () => handleMemoryClick(card));
+      });
+    }
+
+    function handleMemoryClick(cardEl) {
+      if (gameState.winner || !multiplayerState.gameStarted) return;
+      const index = parseInt(cardEl.dataset.index);
+      const card = gameState.memory.cards[index];
+      if (card.flipped || card.matched) return;
+      if (gameState.memory.flippedIndices.length >= 2) return;
+      if (gameState.memory.lockBoard) return;
+      
+      sendAction('makeMove', { game: 'memory', index: index, player: gameState.myColor });
+      if (multiplayerState.isHost) {
+        processMemoryMove(index, gameState.myColor);
+        sendGameState();
+      }
+    }
+
+    function processMemoryMove(index, player) {
+      const mem = gameState.memory;
+      const card = mem.cards[index];
+      if (card.flipped || card.matched) return;
+      
+      card.flipped = true;
+      mem.flippedIndices.push(index);
+      
+      if (mem.flippedIndices.length === 2) {
+        const [a, b] = mem.flippedIndices;
+        const cardA = mem.cards[a];
+        const cardB = mem.cards[b];
         
-        // Winning state
-        if (winningCells.includes(i)) {
-          cell.classList.add('winning');
+        if (cardA.emoji === cardB.emoji) {
+          // Match!
+          cardA.matched = true;
+          cardB.matched = true;
+          cardA.matchedBy = player;
+          cardB.matchedBy = player;
+          mem.flippedIndices = [];
+          // Check if all matched
+          if (mem.cards.every(c => c.matched)) {
+            // Count matches per player
+            const blueCount = mem.cards.filter(c => c.matchedBy === 'blue').length;
+            const pinkCount = mem.cards.filter(c => c.matchedBy === 'pink').length;
+            if (blueCount > pinkCount) gameState.winner = 'blue';
+            else if (pinkCount > blueCount) gameState.winner = 'pink';
+            else gameState.winner = 'draw';
+          }
+          // Player continues their turn on match
+        } else {
+          // No match - lock briefly then flip back
+          mem.lockBoard = true;
+          setTimeout(() => {
+            cardA.flipped = false;
+            cardB.flipped = false;
+            mem.flippedIndices = [];
+            mem.lockBoard = false;
+            gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
+            renderMemory();
+            updateUI();
+            if (multiplayerState.isHost) sendGameState();
+          }, 1200);
         }
       }
     }
 
+    // ============================================
+    // DOTS AND BOXES
+    // ============================================
+
+    function initDotsBoxes() {
+      const size = 4; // 4x4 boxes, 5x5 dots
+      const lines = [];
+      // Horizontal lines: 5 rows (0-4) x 4 cols (0-3)
+      for (let r = 0; r < size + 1; r++) {
+        for (let c = 0; c < size; c++) {
+          lines.push({ type: 'h', row: r, col: c, owner: null });
+        }
+      }
+      // Vertical lines: 4 rows x 5 cols
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size + 1; c++) {
+          lines.push({ type: 'v', row: r, col: c, owner: null });
+        }
+      }
+      const boxes = [];
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          boxes.push({ row: r, col: c, owner: null });
+        }
+      }
+      gameState.dotsboxes.lines = lines;
+      gameState.dotsboxes.boxes = boxes;
+      gameState.dotsboxes.boardSize = size;
+    }
+
+    function renderDotsBoxes() {
+      const size = gameState.dotsboxes.boardSize;
+      const gridSize = size * 2 + 1;
+      let html = `<div class="dots-board" style="grid-template-columns: repeat(${gridSize}, 1fr); grid-template-rows: repeat(${gridSize}, 1fr);">`;
+      
+      for (let gr = 0; gr < gridSize; gr++) {
+        for (let gc = 0; gc < gridSize; gc++) {
+          if (gr % 2 === 0 && gc % 2 === 0) {
+            // Dot
+            html += `<div class="dot"></div>`;
+          } else if (gr % 2 === 0 && gc % 2 === 1) {
+            // Horizontal line
+            const row = gr / 2;
+            const col = (gc - 1) / 2;
+            const line = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === row && l.col === col);
+            let cls = 'line line-h';
+            if (line && line.owner) cls += ' ' + line.owner;
+            html += `<div class="${cls}" data-type="h" data-row="${row}" data-col="${col}"></div>`;
+          } else if (gr % 2 === 1 && gc % 2 === 0) {
+            // Vertical line
+            const row = (gr - 1) / 2;
+            const col = gc / 2;
+            const line = gameState.dotsboxes.lines.find(l => l.type === 'v' && l.row === row && l.col === col);
+            let cls = 'line line-v';
+            if (line && line.owner) cls += ' ' + line.owner;
+            html += `<div class="${cls}" data-type="v" data-row="${row}" data-col="${col}"></div>`;
+          } else {
+            // Box
+            const row = (gr - 1) / 2;
+            const col = (gc - 1) / 2;
+            const box = gameState.dotsboxes.boxes.find(b => b.row === row && b.col === col);
+            let cls = 'box';
+            if (box && box.owner) cls += ' ' + box.owner;
+            html += `<div class="${cls}"></div>`;
+          }
+        }
+      }
+      
+      html += '</div>';
+      boardContainer.innerHTML = html;
+      
+      boardContainer.querySelectorAll('.line').forEach(lineEl => {
+        lineEl.addEventListener('click', () => handleLineClick(lineEl));
+      });
+    }
+
+    function handleLineClick(lineEl) {
+      if (gameState.winner || !multiplayerState.gameStarted) return;
+      if (gameState.currentPlayer !== gameState.myColor) return;
+      
+      const type = lineEl.dataset.type;
+      const row = parseInt(lineEl.dataset.row);
+      const col = parseInt(lineEl.dataset.col);
+      const line = gameState.dotsboxes.lines.find(l => l.type === type && l.row === row && l.col === col);
+      if (!line || line.owner) return;
+      
+      sendAction('makeMove', { game: 'dotsboxes', type, row, col, player: gameState.myColor });
+      if (multiplayerState.isHost) {
+        processLineMove(type, row, col, gameState.myColor);
+        sendGameState();
+      }
+    }
+
+    function processLineMove(type, row, col, player) {
+      const line = gameState.dotsboxes.lines.find(l => l.type === type && l.row === row && l.col === col);
+      if (!line || line.owner) return;
+      line.owner = player;
+      
+      // Check if any box was completed
+      let boxesCompleted = 0;
+      const size = gameState.dotsboxes.boardSize;
+      
+      gameState.dotsboxes.boxes.forEach(box => {
+        if (box.owner) return;
+        // Check all 4 sides
+        const top = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === box.row && l.col === box.col);
+        const bottom = gameState.dotsboxes.lines.find(l => l.type === 'h' && l.row === box.row + 1 && l.col === box.col);
+        const left = gameState.dotsboxes.lines.find(l => l.type === 'v' && l.row === box.row && l.col === box.col);
+        const right = gameState.dotsboxes.lines.find(l => l.type === 'v' && l.row === box.row && l.col === box.col + 1);
+        
+        if (top && top.owner && bottom && bottom.owner && left && left.owner && right && right.owner) {
+          box.owner = player;
+          boxesCompleted++;
+        }
+      });
+      
+      // If no box completed, switch turn
+      if (boxesCompleted === 0) {
+        gameState.currentPlayer = (gameState.currentPlayer === 'blue') ? 'pink' : 'blue';
+      }
+      
+      // Check if game over
+      if (gameState.dotsboxes.boxes.every(b => b.owner)) {
+        const blueBoxes = gameState.dotsboxes.boxes.filter(b => b.owner === 'blue').length;
+        const pinkBoxes = gameState.dotsboxes.boxes.filter(b => b.owner === 'pink').length;
+        if (blueBoxes > pinkBoxes) gameState.winner = 'blue';
+        else if (pinkBoxes > blueBoxes) gameState.winner = 'pink';
+        else gameState.winner = 'draw';
+      }
+    }
+
+    // ============================================
+    // RENDER DISPATCHER
+    // ============================================
+
+    function renderCurrentGame() {
+      if (!gameState.currentGame) return;
+      
+      const titles = {
+        'connect4': '🔴 Connect 4',
+        'tictactoe': '⭕ Tic-Tac-Toe',
+        'memory': '🃏 Memory Match',
+        'dotsboxes': '🔷 Dots & Boxes'
+      };
+      arenaTitle.textContent = titles[gameState.currentGame] || '';
+      
+      switch (gameState.currentGame) {
+        case 'connect4': renderConnect4(); break;
+        case 'tictactoe': renderTicTacToe(); break;
+        case 'memory': renderMemory(); break;
+        case 'dotsboxes': renderDotsBoxes(); break;
+      }
+    }
+
+    function processMove(data) {
+      if (data.game === 'connect4') processConnect4Move(data.col, data.player);
+      else if (data.game === 'tictactoe') processTicTacToeMove(data.index, data.player);
+      else if (data.game === 'memory') processMemoryMove(data.index, data.player);
+      else if (data.game === 'dotsboxes') processLineMove(data.type, data.row, data.col, data.player);
+      
+      renderCurrentGame();
+      updateUI();
+      if (gameState.winner) setTimeout(showGameOver, 900);
+    }
+
+    // ============================================
+    // UI
+    // ============================================
+
     function updateUI() {
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      tagBlue.classList.toggle('active', gameState.currentPlayer === 'blue' && !gameState.winner);
+      tagPink.classList.toggle('active', gameState.currentPlayer === 'pink' && !gameState.winner);
       
-      // Update active player highlighting
-      tagBlue.classList.toggle('active', currentPlayer === 'blue' && !winner);
-      tagPink.classList.toggle('active', currentPlayer === 'pink' && !winner);
-      
-      if (winner) {
-        if (winner === 'draw') {
-          turnIndicator.textContent = "It's a Draw! 🤝";
+      if (gameState.winner) {
+        if (gameState.winner === 'draw') {
+          turnIndicator.textContent = "Draw! 🤝";
         } else {
-          turnIndicator.textContent = (winner === myColor) ? "You Won! 🎉" : "Mahal Won! 💖";
+          turnIndicator.textContent = (gameState.winner === gameState.myColor) ? "You Won! 🎉" : "Mahal Won! 💖";
         }
         turnIndicator.style.background = 'var(--primary-color)';
         turnIndicator.style.color = 'white';
         resetBtn.style.display = 'inline-block';
+        setTimeout(showGameOver, 600);
       } else {
-        if (currentPlayer === myColor) {
+        if (gameState.currentPlayer === gameState.myColor) {
           turnIndicator.textContent = "Your Turn! 👆";
           turnIndicator.style.background = 'var(--accent-color)';
           turnIndicator.style.color = 'var(--dark-color)';
@@ -1277,48 +2216,14 @@
       }
     }
 
-    function resetGame() {
-      board = new Array(ROWS * COLS).fill('');
-      currentPlayer = 'blue';
-      winner = null;
-      winningCells = [];
-      chatMessages = [];
-      renderBoard();
-      renderChat();
-      updateUI();
-      gameOverScreen.classList.add('hidden');
-      hideColumnPreview();
-    }
-
-    function startGame() {
-      multiplayerState.gameStarted = true;
-      startScreen.classList.add('hidden');
-      gameArena.style.display = 'flex';
-      initBoard();
-      resetGame();
-      
-      // Update player tags based on role
-      if (multiplayerState.playerIndex === 0) {
-        tagBlue.textContent = '💙 You';
-        tagPink.textContent = 'Mahal 💖';
-      } else {
-        tagBlue.textContent = '💙 Me';
-        tagPink.textContent = 'You 💖';
-      }
-      
-      if (multiplayerState.isHost) {
-        setTimeout(sendGameState, 200);
-      }
-    }
-
     function showGameOver() {
+      if (gameOverScreen.classList.contains('hidden') === false) return;
       gameOverScreen.classList.remove('hidden');
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
       
-      if (winner === 'draw') {
+      if (gameState.winner === 'draw') {
         winnerText.textContent = "It's a Draw! 🤝";
         winnerMessage.textContent = "A tie! We're too perfectly matched, Mahal. I love you so much! Get better soon! 💖";
-      } else if (winner === myColor) {
+      } else if (gameState.winner === gameState.myColor) {
         winnerText.textContent = "You Win! 🎉";
         winnerMessage.textContent = "Yay! You won, Mahal! But honestly, you always win my heart. I love you so much! Get better soon! 💖";
       } else {
@@ -1326,22 +2231,55 @@
         winnerMessage.textContent = "You won, Mahal! I knew you would. You're my champion. I love you so much! Get better soon! 💖";
       }
       
-      // Celebrate with heart burst
-      setTimeout(() => burstHearts([5, 15, 25, 35]), 200);
+      if (gameState.winner !== 'draw' && gameState.winner !== gameState.myColor) {
+        // Mahal won
+      }
+      
+      burstHearts([0, 7, 14, 21, 28, 35], boardContainer);
     }
 
     // ============================================
-    // CELEBRATION - HEART BURST
+    // CHAT
     // ============================================
 
-    function burstHearts(indices) {
+    function sendChat() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      const message = { sender: gameState.myColor, text: text };
+      gameState.chatMessages.push(message);
+      if (gameState.chatMessages.length > 30) gameState.chatMessages = gameState.chatMessages.slice(-30);
+      chatInput.value = '';
+      renderChat();
+      
+      if (multiplayerState.isHost) sendGameState();
+      else sendAction('chat', { message: message });
+    }
+
+    function renderChat() {
+      chatMessagesEl.innerHTML = '';
+      gameState.chatMessages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        const senderName = (msg.sender === gameState.myColor) ? 'You' : 'Mahal';
+        div.innerHTML = `<span class="sender ${msg.sender}">${senderName}:</span>${msg.text}`;
+        chatMessagesEl.appendChild(div);
+      });
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    // ============================================
+    // HEART BURST
+    // ============================================
+
+    function burstHearts(indices, container) {
       const heartEmojis = ['💖', '💕', '💗', '❤️', '💘', '🌸'];
+      const elements = container ? container.querySelectorAll('.cell, .ttt-cell') : [];
       
       indices.forEach((idx, i) => {
-        const cell = boardEl.children[idx];
-        if (!cell) return;
-        
-        const rect = cell.getBoundingClientRect();
+        const el = elements[idx] || null;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
         
         for (let j = 0; j < 6; j++) {
           setTimeout(() => {
@@ -1354,45 +2292,9 @@
             heart.style.setProperty('--ty', (-150 - Math.random() * 200) + 'px');
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 1500);
-          }, j * 80);
+          }, j * 80 + i * 100);
         }
       });
-    }
-
-    // ============================================
-    // CHAT
-    // ============================================
-
-    function sendChat() {
-      const text = chatInput.value.trim();
-      if (!text) return;
-      
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
-      const message = { sender: myColor, text: text };
-      
-      chatMessages.push(message);
-      if (chatMessages.length > 30) chatMessages = chatMessages.slice(-30);
-      chatInput.value = '';
-      renderChat();
-      
-      if (multiplayerState.isHost) {
-        sendGameState();
-      } else {
-        sendAction('chat', { message: message });
-      }
-    }
-
-    function renderChat() {
-      chatMessagesEl.innerHTML = '';
-      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
-      chatMessages.forEach(msg => {
-        const div = document.createElement('div');
-        div.className = 'chat-message';
-        const senderName = (msg.sender === myColor) ? 'You' : 'Mahal';
-        div.innerHTML = `<span class="sender ${msg.sender}">${senderName}:</span>${msg.text}`;
-        chatMessagesEl.appendChild(div);
-      });
-      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
     }
 
     // ============================================
@@ -1402,7 +2304,6 @@
     hostGameBtn.addEventListener('click', hostGame);
     joinGameBtn.addEventListener('click', joinGame);
     
-    // Copy host ID on tap
     hostIdEl.addEventListener('click', () => {
       const text = hostIdEl.textContent;
       if (text === '---' || text === '✅ Copied!') return;
@@ -1438,7 +2339,7 @@
 
     resetBtn.addEventListener('click', () => {
       if (multiplayerState.isHost) {
-        resetGame();
+        resetCurrentGame();
         sendGameState();
       } else {
         sendAction('restart');
@@ -1448,16 +2349,61 @@
     playAgainBtn.addEventListener('click', () => {
       gameOverScreen.classList.add('hidden');
       if (multiplayerState.isHost) {
-        resetGame();
+        resetCurrentGame();
         sendGameState();
       } else {
         sendAction('restart');
       }
     });
 
+    backToHubBtn.addEventListener('click', () => {
+      gameOverScreen.classList.add('hidden');
+      gameState.currentGame = null;
+      gameState.winner = null;
+      gameState.chatMessages = [];
+      showGameHub();
+      if (multiplayerState.isHost) sendGameState();
+      else sendAction('backToHub');
+    });
+
+    backBtn.addEventListener('click', () => {
+      gameState.currentGame = null;
+      gameState.winner = null;
+      showGameHub();
+      if (multiplayerState.isHost) sendGameState();
+      else sendAction('backToHub');
+    });
+
     chatSendBtn.addEventListener('click', sendChat);
     chatInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') sendChat();
+    });
+
+    // KEY FIX: Handle tab visibility change
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        // App came back to foreground
+        if (multiplayerState.conn && multiplayerState.isConnected) {
+          // Send a ping to test connection
+          try {
+            multiplayerState.conn.send({ type: 'ping', t: Date.now() });
+            hideReconnectBanner();
+          } catch (e) {
+            // Connection is dead, attempt reconnect
+            if (multiplayerState.remotePlayer) {
+              multiplayerState.isConnected = false;
+              updateConnectionStatus('connecting', 'Reconnecting...');
+              showReconnectBanner();
+              attemptReconnect();
+            }
+          }
+        } else if (multiplayerState.remotePlayer && !multiplayerState.intentionalClose) {
+          // We were connected before, try to reconnect
+          updateConnectionStatus('connecting', 'Reconnecting...');
+          showReconnectBanner();
+          attemptReconnect();
+        }
+      }
     });
 
     // Prevent double-tap zoom
@@ -1472,9 +2418,27 @@
     // INIT
     // ============================================
 
+    gameState.myColor = 'blue';
+    gameState.opponentColor = 'pink';
+
+    // Set myColor based on role after connection
+    const originalSetupConnection = setupConnection;
+    setupConnection = function(conn) {
+      originalSetupConnection(conn);
+      gameState.myColor = multiplayerState.playerIndex === 0 ? 'blue' : 'pink';
+      gameState.opponentColor = multiplayerState.playerIndex === 0 ? 'pink' : 'blue';
+      
+      // Update tags
+      if (multiplayerState.playerIndex === 0) {
+        tagBlue.textContent = '💙 You';
+        tagPink.textContent = 'Mahal 💖';
+      } else {
+        tagBlue.textContent = '💙 Me';
+        tagPink.textContent = 'You 💖';
+      }
+    };
+
     initializeMultiplayer();
-    initBoard();
-    updateUI();
   </script>
 </body>
 </html>
