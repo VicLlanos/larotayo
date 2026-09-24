@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#292F36">
+  <title>Connect 4 Love 💖 - Mahal vs. Me</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap');
+    
+    :root {
+      --primary-color: #FF6B6B;
+      --secondary-color: #4ECDC4;
+      --accent-color: #FFE66D;
+      --dark-color: #292F36;
+      --light-color: #F7FFF7;
+      --player1-color: #FF6B6B;
+      --player2-color: #4ECDC4;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: linear-gradient(135deg, #292F36, #1A1E23);
+      font-family: 'Quicksand', 'Poppins', sans-serif;
+      color: var(--light-color);
+      touch-action: manipulation;
+      padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+    }
+
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 12px 20px;
+      background: rgba(41, 47, 54, 0.95);
+      border-radius: 0;
+      width: 100%;
+      max-width: 500px;
+      height: 100dvh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-header {
+      width: 100%;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .game-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 3px;
+      font-family: 'Quicksand', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .game-subtitle {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    /* ============================================ */
+    /* MULTIPLAYER SECTION                          */
+    /* ============================================ */
+    .multiplayer-section {
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .connection-status {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .status-connected {
+      background: rgba(46, 204, 113, 0.25);
+      color: #2ecc71;
+      border: 1px solid #2ecc71;
+      animation: statusPulse 2s infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+    }
+
+    .status-disconnected {
+      background: rgba(231, 76, 60, 0.25);
+      color: #e74c3c;
+      border: 1px solid #e74c3c;
+    }
+
+    .status-connecting {
+      background: rgba(241, 196, 15, 0.25);
+      color: #f1c40f;
+      border: 1px solid #f1c40f;
+      animation: statusBlink 1s infinite;
+    }
+
+    @keyframes statusBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .mp-btn {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      width: 100%;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+    }
+
+    .mp-btn:active {
+      transform: scale(0.97);
+    }
+
+    .mp-btn.primary {
+      background: linear-gradient(135deg, var(--primary-color), #ff8e8e);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .mp-btn.primary:active {
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
+    }
+
+    .host-info {
+      display: none;
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      width: 100%;
+      border: 2px dashed rgba(255, 230, 109, 0.4);
+    }
+
+    .host-info p {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .host-id {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      word-break: break-all;
+      background: rgba(0,0,0,0.4);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-top: 3px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      user-select: all;
+    }
+
+    .host-id:active {
+      transform: scale(0.98);
+      border-color: var(--accent-color);
+    }
+
+    .join-input-group {
+      display: flex;
+      width: 100%;
+      gap: 0;
+    }
+
+    .join-input {
+      flex: 1;
+      padding: 14px 12px;
+      border-radius: 10px 0 0 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 0;
+      min-height: 48px;
+    }
+
+    .join-input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .join-input:focus {
+      border-color: var(--accent-color);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .join-btn {
+      background: var(--accent-color);
+      color: var(--dark-color);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      min-height: 48px;
+    }
+
+    .join-btn:active {
+      transform: scale(0.97);
+      background: #FFD700;
+    }
+
+    /* ============================================ */
+    /* GAME ARENA                                   */
+    /* ============================================ */
+    #game-arena {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      width: 100%;
+      flex-shrink: 0;
+      gap: 8px;
+    }
+
+    .player-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      font-size: 0.75rem;
+    }
+
+    .player-tag.blue { color: var(--player1-color); }
+    .player-tag.pink { color: var(--player2-color); }
+
+    .player-tag.active {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+
+    .player-tag.active.blue {
+      box-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
+    }
+
+    .player-tag.active.pink {
+      box-shadow: 0 0 12px rgba(78, 205, 196, 0.6);
+    }
+
+    .turn-indicator {
+      background: var(--accent-color);
+      color: var(--dark-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      animation: pulse 1.5s infinite;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.05); }
+    }
+
+    /* ============================================ */
+    /* BOARD - Mobile Optimized                     */
+    /* ============================================ */
+    .board-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto 12px;
+      background: linear-gradient(180deg, #2563eb, #1e3a8a);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 
+        0 8px 25px rgba(30, 58, 138, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      gap: 5px;
+      aspect-ratio: 7 / 6;
+      background: #0f1d4a;
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 5px;
+      position: relative;
+    }
+
+    .cell {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+
+    .cell:active:not(.taken) {
+      background: #e0e0e0;
+      transform: scale(0.92);
+    }
+
+    .cell.taken {
+      cursor: not-allowed;
+    }
+
+    /* Piece Drop Animation */
+    .cell.blue {
+      background: radial-gradient(circle at 30% 30%, #ff9a9e, var(--player1-color));
+      box-shadow: 
+        inset 0 3px 6px rgba(0,0,0,0.25), 
+        0 0 12px rgba(255, 107, 107, 0.6);
+      animation: dropIn 0.5s cubic-bezier(0.25, 1.5, 0.5, 1);
+    }
+
+    .cell.pink {
+      background: radial-gradient(circle at 30% 30%, #a1e8e0, var(--player2-color));
+      box-shadow: 
+        inset 0 3px 6px rgba(0,0,0,0.25), 
+        0 0 12px rgba(78, 205, 196, 0.6);
+      animation: dropIn 0.5s cubic-bezier(0.25, 1.5, 0.5, 1);
+    }
+
+    @keyframes dropIn {
+      0% { 
+        transform: translateY(-500%) scale(0.7); 
+        opacity: 0;
+      }
+      60% { 
+        transform: translateY(8%) scale(1.1); 
+        opacity: 1;
+      }
+      80% {
+        transform: translateY(-4%) scale(0.98);
+      }
+      100% { 
+        transform: translateY(0) scale(1); 
+        opacity: 1;
+      }
+    }
+
+    /* Winning Cells */
+    .cell.winning {
+      animation: winPulse 0.8s infinite;
+      border: 3px solid gold;
+      z-index: 5;
+    }
+
+    @keyframes winPulse {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 15px gold, 0 0 30px gold;
+      }
+      50% { 
+        transform: scale(1.12); 
+        box-shadow: 0 0 25px gold, 0 0 50px gold;
+      }
+    }
+
+    /* Column Preview Heart */
+    .column-preview {
+      position: absolute;
+      top: -30px;
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 10;
+      text-shadow: 0 0 10px var(--accent-color);
+      animation: heartFloat 1s infinite;
+    }
+
+    @keyframes heartFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* ============================================ */
+    /* CHAT                                         */
+    /* ============================================ */
+    .chat-container {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      padding: 10px;
+      width: 100%;
+      flex-shrink: 0;
+      max-width: 440px;
+    }
+
+    .chat-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .chat-messages {
+      height: 60px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.35);
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-bottom: 6px;
+      text-align: left;
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      scrollbar-width: thin;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+    }
+
+    .chat-message {
+      line-height: 1.35;
+      word-wrap: break-word;
+      animation: chatSlide 0.3s ease-out;
+    }
+
+    @keyframes chatSlide {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .chat-message .sender {
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .chat-message .sender.blue { color: var(--player1-color); }
+    .chat-message .sender.pink { color: var(--player2-color); }
+
+    .chat-input-area {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      min-width: 0;
+      min-height: 40px;
+    }
+
+    .chat-input-area input::placeholder {
+      color: rgba(255,255,255,0.35);
+    }
+
+    .chat-input-area input:focus {
+      border-color: var(--accent-color);
+    }
+
+    .chat-input-area button {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 0 16px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 40px;
+    }
+
+    .chat-input-area button:active {
+      transform: scale(0.94);
+      background: #3DBEB6;
+    }
+
+    /* ============================================ */
+    /* BUTTONS                                      */
+    /* ============================================ */
+    .btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      padding: 14px 25px;
+      font-size: 0.95rem;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      transition: all 0.25s ease;
+      width: 100%;
+      max-width: 250px;
+      margin-top: 10px;
+      min-height: 48px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
+    }
+
+    #resetBtn {
+      max-width: 220px;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================ */
+    /* OVERLAYS                                     */
+    /* ============================================ */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      z-index: 100;
+      padding: 25px 20px;
+      transition: opacity 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .overlay h1 {
+      font-size: 1.7rem;
+      color: var(--accent-color);
+      margin-bottom: 12px;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .overlay p {
+      font-size: 0.95rem;
+      color: var(--light-color);
+      margin-bottom: 8px;
+      max-width: 350px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .bear-gif {
+      width: 110px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .message-box {
+      background: rgba(255, 107, 107, 0.15);
+      border-radius: 20px;
+      padding: 18px;
+      margin-top: 15px;
+      border: 2px dashed var(--primary-color);
+      max-width: 380px;
+    }
+
+    .message-box p {
+      font-size: 0.95rem;
+      color: var(--light-color);
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ============================================ */
+    /* FLOATING HEARTS BACKGROUND                   */
+    /* ============================================ */
+    .heart-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .heart-bg span {
+      position: absolute;
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 107, 107, 0.25);
+      transform: rotate(45deg);
+      animation: floatUp 15s linear infinite;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .heart-bg span::before,
+    .heart-bg span::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 107, 107, 0.25);
+      border-radius: 50%;
+    }
+    .heart-bg span::before { top: -6px; left: 0; }
+    .heart-bg span::after { top: 0; left: -6px; }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(45deg) scale(0.5); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) rotate(45deg) scale(1.5); opacity: 0; }
+    }
+    .heart-bg span:nth-child(1) { left: 8%; animation-duration: 18s; }
+    .heart-bg span:nth-child(2) { left: 25%; animation-duration: 22s; animation-delay: 3s; }
+    .heart-bg span:nth-child(3) { left: 50%; animation-duration: 16s; animation-delay: 6s; }
+    .heart-bg span:nth-child(4) { left: 72%; animation-duration: 20s; animation-delay: 2s; }
+    .heart-bg span:nth-child(5) { left: 90%; animation-duration: 24s; animation-delay: 8s; }
+
+    /* ============================================ */
+    /* HEART BURST (celebration)                    */
+    /* ============================================ */
+    .heart-burst {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.5rem;
+      z-index: 200;
+      animation: burstUp 1.5s ease-out forwards;
+    }
+
+    @keyframes burstUp {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(360deg);
+      }
+    }
+
+    /* ============================================ */
+    /* RESPONSIVE - Small phones                    */
+    /* ============================================ */
+    @media (max-width: 380px) {
+      .game-title { font-size: 1.2rem; }
+      .game-subtitle { font-size: 0.7rem; }
+      #game-container { padding: 8px 8px 15px; }
+      .board-wrapper { padding: 8px; }
+      .board { gap: 4px; padding: 4px; }
+      .status-bar { font-size: 0.7rem; padding: 8px 10px; }
+      .turn-indicator { font-size: 0.65rem; padding: 5px 10px; }
+      .overlay h1 { font-size: 1.4rem; }
+      .overlay p { font-size: 0.85rem; }
+      .bear-gif { width: 90px; }
+      .chat-messages { height: 50px; }
+      .mp-btn { font-size: 0.85rem; padding: 12px 16px; }
+    }
+
+    @media (max-height: 700px) {
+      .chat-messages { height: 45px; }
+      .bear-gif { width: 80px; }
+      .game-subtitle { margin-bottom: 6px; }
+      .board-wrapper { margin-bottom: 8px; }
+    }
+
+    /* Landscape phones */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .board-wrapper { max-width: 320px; }
+      .game-title { font-size: 1rem; }
+      .chat-container { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Hearts Background -->
+  <div class="heart-bg">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div id="game-container">
+    <div class="game-header">
+      <h1 class="game-title">Connect 4 Love 💖</h1>
+      <p class="game-subtitle">Mahal vs. Me</p>
+    </div>
+
+    <!-- Multiplayer Section -->
+    <div class="multiplayer-section" id="mp-section">
+      <div class="connection-status status-disconnected" id="connection-status">Disconnected</div>
+
+      <button class="mp-btn primary" id="host-game">🎮 Host Game (You Play First)</button>
+
+      <div class="host-info" id="host-info">
+        <p>Share this ID with Mahal:</p>
+        <div class="host-id" id="host-id">---</div>
+        <p style="margin-top: 8px; font-size: 0.7rem;">Tap to copy! 💕</p>
+      </div>
+
+      <div class="join-input-group" id="join-group">
+        <input type="text" class="join-input" id="join-id" placeholder="Paste Mahal's ID..." autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="join-btn" id="join-game">Join</button>
+      </div>
+    </div>
+
+    <!-- Game Arena (Hidden Until Connected) -->
+    <div id="game-arena">
+      <div class="status-bar">
+        <div class="player-tag blue" id="tagBlue">💙 You</div>
+        <div class="turn-indicator" id="turnIndicator">Waiting...</div>
+        <div class="player-tag pink" id="tagPink">Mahal 💖</div>
+      </div>
+
+      <div class="board-wrapper">
+        <div class="board" id="board">
+          <!-- 42 cells generated by JS -->
+        </div>
+      </div>
+
+      <button class="btn" id="resetBtn" style="display: none;">Next Round 💕</button>
+
+      <!-- Chat -->
+      <div class="chat-container">
+        <div class="chat-title">💬 Sweet Messages</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" placeholder="Say something sweet..." maxlength="60" autocomplete="off">
+          <button id="chatSendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Screen Overlay -->
+  <div class="overlay" id="startScreen">
+    <img src="https://media.giphy.com/media/1d7F9xyq6j7C1ojbC5/giphy.gif" alt="Cute Bear" class="bear-gif">
+    <h1>Get Well Soon, Mahal! 💖</h1>
+    <p>Since you need to rest, let's play Connect 4 together! One of us hosts, the other joins with the ID.</p>
+    <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">You (💙) play first. First to get 4 in a row wins!</p>
+    <button class="btn" id="startBtn" style="margin-top: 20px;">Let's Play! 💕</button>
+  </div>
+
+  <!-- Game Over Overlay -->
+  <div class="overlay hidden" id="gameOverScreen">
+    <img src="https://media.giphy.com/media/1d7F9xyq6j7C1ojbC5/giphy.gif" alt="Cute Bear" class="bear-gif">
+    <h1 id="winnerText">You Win! 🎉</h1>
+    <div class="message-box">
+      <p id="winnerMessage">Yay! But honestly, you always win my heart. I love you so much, Mahal! Get better soon! 💖</p>
+    </div>
+    <button class="btn" id="playAgainBtn" style="margin-top: 20px;">Play Again 🔄</button>
+  </div>
+
+  <!-- PeerJS Library -->
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+
+  <script>
+    // ============================================
+    // CONNECT 4 LOVE - PeerJS Multiplayer Game
+    // Mobile-First Edition
+    // ============================================
+
+    const ROWS = 6;
+    const COLS = 7;
+
+    // --- Multiplayer State ---
+    const multiplayerState = {
+      peer: null,
+      conn: null,
+      isHost: false,
+      isConnected: false,
+      peerId: null,
+      remotePlayer: null,
+      gameStarted: false,
+      playerIndex: 0 // 0 = host (blue), 1 = client (pink)
+    };
+
+    // --- Game State ---
+    let board = new Array(ROWS * COLS).fill('');
+    let currentPlayer = 'blue';
+    let winner = null;
+    let winningCells = [];
+    let chatMessages = [];
+
+    // --- DOM Elements ---
+    const connectionStatusEl = document.getElementById('connection-status');
+    const hostGameBtn = document.getElementById('host-game');
+    const joinGameBtn = document.getElementById('join-game');
+    const hostInfoEl = document.getElementById('host-info');
+    const hostIdEl = document.getElementById('host-id');
+    const joinIdEl = document.getElementById('join-id');
+    const mpSection = document.getElementById('mp-section');
+    const joinGroup = document.getElementById('join-group');
+    const gameArena = document.getElementById('game-arena');
+    const boardEl = document.getElementById('board');
+    const turnIndicator = document.getElementById('turnIndicator');
+    const tagBlue = document.getElementById('tagBlue');
+    const tagPink = document.getElementById('tagPink');
+    const resetBtn = document.getElementById('resetBtn');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const winnerText = document.getElementById('winnerText');
+    const winnerMessage = document.getElementById('winnerMessage');
+    const startBtn = document.getElementById('startBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const chatMessagesEl = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+
+    // ============================================
+    // MULTIPLAYER (PeerJS)
+    // ============================================
+
+    function initializeMultiplayer() {
+      multiplayerState.peerId = 'c4love-' + Math.random().toString(36).substring(2, 8);
+      multiplayerState.peer = new Peer(multiplayerState.peerId, {
+        debug: 1,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:global.stun.twilio.com:3478' }
+          ]
+        }
+      });
+
+      multiplayerState.peer.on('open', (id) => {
+        updateConnectionStatus('disconnected', 'Ready to connect');
+        console.log(`Your ID: ${id}`);
+      });
+
+      multiplayerState.peer.on('connection', (conn) => {
+        setupConnection(conn);
+        multiplayerState.isHost = true;
+        multiplayerState.playerIndex = 0;
+        updateConnectionStatus('connected', '💖 Mahal is connected!');
+        hostGameBtn.style.display = 'none';
+        joinGroup.style.display = 'none';
+        hostInfoEl.style.display = 'block';
+        hostIdEl.textContent = multiplayerState.peerId;
+        setTimeout(startGame, 500);
+      });
+
+      multiplayerState.peer.on('error', (err) => {
+        console.error('PeerJS error:', err);
+        if (err.type === 'peer-unavailable') {
+          updateConnectionStatus('disconnected', 'Host not found. Check ID.');
+        } else if (err.type === 'unavailable-id') {
+          setTimeout(initializeMultiplayer, 500);
+        } else {
+          updateConnectionStatus('disconnected', 'Connection error');
+        }
+      });
+    }
+
+    function setupConnection(conn) {
+      multiplayerState.conn = conn;
+      multiplayerState.isConnected = true;
+      multiplayerState.remotePlayer = conn.peer;
+
+      conn.on('open', () => {
+        updateConnectionStatus('connected', '💖 Connected to Mahal!');
+        if (multiplayerState.isHost) {
+          sendGameState();
+        } else {
+          setTimeout(startGame, 500);
+        }
+      });
+
+      conn.on('data', (data) => {
+        handleIncomingData(data);
+      });
+
+      conn.on('close', () => {
+        multiplayerState.isConnected = false;
+        updateConnectionStatus('disconnected', 'Disconnected');
+      });
+
+      conn.on('error', (err) => {
+        console.error('Connection error:', err);
+        updateConnectionStatus('disconnected', 'Connection error');
+      });
+    }
+
+    function hostGame() {
+      multiplayerState.isHost = true;
+      multiplayerState.playerIndex = 0;
+      hostInfoEl.style.display = 'block';
+      hostIdEl.textContent = multiplayerState.peerId;
+      hostGameBtn.style.display = 'none';
+      joinGroup.style.display = 'none';
+      updateConnectionStatus('connecting', 'Waiting for Mahal...');
+    }
+
+    function joinGame() {
+      const hostId = joinIdEl.value.trim();
+      if (!hostId) {
+        alert('Please enter the Host ID, Mahal!');
+        return;
+      }
+
+      multiplayerState.isHost = false;
+      multiplayerState.playerIndex = 1;
+      
+      hostGameBtn.style.display = 'none';
+      joinGroup.style.display = 'none';
+      hostInfoEl.style.display = 'none';
+      
+      updateConnectionStatus('connecting', 'Connecting to your love...');
+      const conn = multiplayerState.peer.connect(hostId, { reliable: true });
+      setupConnection(conn);
+    }
+
+    function updateConnectionStatus(status, message) {
+      connectionStatusEl.textContent = message;
+      connectionStatusEl.className = 'connection-status';
+      switch (status) {
+        case 'connected':
+          connectionStatusEl.classList.add('status-connected');
+          multiplayerState.isConnected = true;
+          break;
+        case 'disconnected':
+          connectionStatusEl.classList.add('status-disconnected');
+          multiplayerState.isConnected = false;
+          break;
+        case 'connecting':
+          connectionStatusEl.classList.add('status-connecting');
+          break;
+      }
+    }
+
+    function sendGameState() {
+      if (!multiplayerState.isConnected) return;
+      multiplayerState.conn.send({
+        type: 'gameState',
+        state: {
+          board: board,
+          currentPlayer: currentPlayer,
+          winner: winner,
+          winningCells: winningCells,
+          chatMessages: chatMessages
+        },
+        sender: multiplayerState.isHost ? 'host' : 'client'
+      });
+    }
+
+    function sendAction(action, data = {}) {
+      if (!multiplayerState.isConnected) return;
+      multiplayerState.conn.send({
+        type: 'action',
+        action: action,
+        data: data,
+        sender: multiplayerState.isHost ? 'host' : 'client'
+      });
+    }
+
+    function handleIncomingData(data) {
+      switch (data.type) {
+        case 'gameState':
+          if (!multiplayerState.isHost && data.sender === 'host') {
+            const prevBoard = board.slice();
+            board = data.state.board;
+            currentPlayer = data.state.currentPlayer;
+            winner = data.state.winner;
+            winningCells = data.state.winningCells || [];
+            chatMessages = data.state.chatMessages || [];
+            renderBoard(prevBoard);
+            renderChat();
+            updateUI();
+            if (winner && !gameOverScreen.classList.contains('hidden') === false) {
+              setTimeout(showGameOver, 600);
+            }
+          }
+          break;
+        case 'action':
+          if (data.sender !== (multiplayerState.isHost ? 'host' : 'client')) {
+            handleRemoteAction(data.action, data.data);
+          }
+          break;
+      }
+    }
+
+    function handleRemoteAction(action, data) {
+      switch (action) {
+        case 'makeMove':
+          if (multiplayerState.isHost) {
+            makeMove(data.col, data.playerIndex);
+            sendGameState();
+          }
+          break;
+        case 'chat':
+          chatMessages.push(data.message);
+          if (chatMessages.length > 30) chatMessages = chatMessages.slice(-30);
+          renderChat();
+          if (multiplayerState.isHost) {
+            sendGameState();
+          }
+          break;
+        case 'restart':
+          if (multiplayerState.isHost) {
+            resetGame();
+            sendGameState();
+          }
+          break;
+      }
+    }
+
+    // ============================================
+    // GAME LOGIC
+    // ============================================
+
+    function initBoard() {
+      boardEl.innerHTML = '';
+      for (let i = 0; i < ROWS * COLS; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.index = i;
+        cell.dataset.col = i % COLS;
+        
+        // Tap handler
+        cell.addEventListener('click', () => handleCellClick(i));
+        
+        // Hover preview for desktop
+        cell.addEventListener('mouseenter', () => showColumnPreview(i % COLS));
+        cell.addEventListener('mouseleave', hideColumnPreview);
+        
+        boardEl.appendChild(cell);
+      }
+    }
+
+    function showColumnPreview(col) {
+      if (winner || !multiplayerState.gameStarted) return;
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      if (currentPlayer !== myColor) return;
+      
+      // Find topmost cell in this column
+      let topIndex = -1;
+      for (let row = 0; row < ROWS; row++) {
+        const idx = row * COLS + col;
+        if (board[idx] === '') {
+          topIndex = idx;
+          break;
+        }
+      }
+      if (topIndex === -1) return;
+      
+      // Highlight the target cell
+      boardEl.children[topIndex].style.transform = 'scale(1.1)';
+      boardEl.children[topIndex].style.boxShadow = '0 0 15px var(--accent-color)';
+    }
+
+    function hideColumnPreview() {
+      Array.from(boardEl.children).forEach(cell => {
+        cell.style.transform = '';
+        cell.style.boxShadow = '';
+      });
+    }
+
+    function handleCellClick(index) {
+      if (winner || !multiplayerState.gameStarted) return;
+      
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      if (currentPlayer !== myColor) return;
+      
+      const col = index % COLS;
+      
+      if (multiplayerState.isHost) {
+        makeMove(col, multiplayerState.playerIndex);
+        sendGameState();
+      } else {
+        sendAction('makeMove', { col: col, playerIndex: multiplayerState.playerIndex });
+      }
+    }
+
+    function makeMove(col, playerIndex) {
+      if (winner) return;
+      
+      let targetIndex = -1;
+      for (let row = ROWS - 1; row >= 0; row--) {
+        const idx = row * COLS + col;
+        if (board[idx] === '') {
+          targetIndex = idx;
+          break;
+        }
+      }
+      
+      if (targetIndex === -1) return;
+      
+      const playerColor = (playerIndex === 0) ? 'blue' : 'pink';
+      board[targetIndex] = playerColor;
+      
+      const winInfo = checkWin(targetIndex, playerColor);
+      if (winInfo) {
+        winner = playerColor;
+        winningCells = winInfo;
+        // Celebration burst
+        setTimeout(() => burstHearts(winInfo), 300);
+      } else if (board.every(cell => cell !== '')) {
+        winner = 'draw';
+      } else {
+        currentPlayer = (currentPlayer === 'blue') ? 'pink' : 'blue';
+      }
+      
+      renderBoard();
+      updateUI();
+      
+      if (winner) {
+        setTimeout(showGameOver, 900);
+      }
+    }
+
+    function checkWin(index, player) {
+      const row = Math.floor(index / COLS);
+      const col = index % COLS;
+      const directions = [[0, 1], [1, 0], [1, 1], [1, -1]];
+      
+      for (const [dr, dc] of directions) {
+        let cells = [index];
+        for (let i = 1; i < 4; i++) {
+          const r = row + dr * i, c = col + dc * i;
+          if (r < 0 || r >= ROWS || c < 0 || c >= COLS) break;
+          const idx = r * COLS + c;
+          if (board[idx] === player) cells.push(idx);
+          else break;
+        }
+        for (let i = 1; i < 4; i++) {
+          const r = row - dr * i, c = col - dc * i;
+          if (r < 0 || r >= ROWS || c < 0 || c >= COLS) break;
+          const idx = r * COLS + c;
+          if (board[idx] === player) cells.unshift(idx);
+          else break;
+        }
+        if (cells.length >= 4) return cells.slice(0, 4);
+      }
+      return null;
+    }
+
+    function renderBoard(prevBoard = null) {
+      const cells = boardEl.children;
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        const value = board[i];
+        const prevValue = prevBoard ? prevBoard[i] : null;
+        
+        // Only reset classes if state changed
+        if (prevBoard === null || prevValue !== value) {
+          cell.className = 'cell';
+          if (value === 'blue') cell.classList.add('blue', 'taken');
+          if (value === 'pink') cell.classList.add('pink', 'taken');
+        }
+        
+        // Winning state
+        if (winningCells.includes(i)) {
+          cell.classList.add('winning');
+        }
+      }
+    }
+
+    function updateUI() {
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      
+      // Update active player highlighting
+      tagBlue.classList.toggle('active', currentPlayer === 'blue' && !winner);
+      tagPink.classList.toggle('active', currentPlayer === 'pink' && !winner);
+      
+      if (winner) {
+        if (winner === 'draw') {
+          turnIndicator.textContent = "It's a Draw! 🤝";
+        } else {
+          turnIndicator.textContent = (winner === myColor) ? "You Won! 🎉" : "Mahal Won! 💖";
+        }
+        turnIndicator.style.background = 'var(--primary-color)';
+        turnIndicator.style.color = 'white';
+        resetBtn.style.display = 'inline-block';
+      } else {
+        if (currentPlayer === myColor) {
+          turnIndicator.textContent = "Your Turn! 👆";
+          turnIndicator.style.background = 'var(--accent-color)';
+          turnIndicator.style.color = 'var(--dark-color)';
+        } else {
+          turnIndicator.textContent = "Mahal's Turn ⏳";
+          turnIndicator.style.background = '#666';
+          turnIndicator.style.color = 'white';
+        }
+        resetBtn.style.display = 'none';
+      }
+    }
+
+    function resetGame() {
+      board = new Array(ROWS * COLS).fill('');
+      currentPlayer = 'blue';
+      winner = null;
+      winningCells = [];
+      chatMessages = [];
+      renderBoard();
+      renderChat();
+      updateUI();
+      gameOverScreen.classList.add('hidden');
+      hideColumnPreview();
+    }
+
+    function startGame() {
+      multiplayerState.gameStarted = true;
+      startScreen.classList.add('hidden');
+      gameArena.style.display = 'flex';
+      initBoard();
+      resetGame();
+      
+      // Update player tags based on role
+      if (multiplayerState.playerIndex === 0) {
+        tagBlue.textContent = '💙 You';
+        tagPink.textContent = 'Mahal 💖';
+      } else {
+        tagBlue.textContent = '💙 Me';
+        tagPink.textContent = 'You 💖';
+      }
+      
+      if (multiplayerState.isHost) {
+        setTimeout(sendGameState, 200);
+      }
+    }
+
+    function showGameOver() {
+      gameOverScreen.classList.remove('hidden');
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      
+      if (winner === 'draw') {
+        winnerText.textContent = "It's a Draw! 🤝";
+        winnerMessage.textContent = "A tie! We're too perfectly matched, Mahal. I love you so much! Get better soon! 💖";
+      } else if (winner === myColor) {
+        winnerText.textContent = "You Win! 🎉";
+        winnerMessage.textContent = "Yay! You won, Mahal! But honestly, you always win my heart. I love you so much! Get better soon! 💖";
+      } else {
+        winnerText.textContent = "Mahal Wins! 💖";
+        winnerMessage.textContent = "You won, Mahal! I knew you would. You're my champion. I love you so much! Get better soon! 💖";
+      }
+      
+      // Celebrate with heart burst
+      setTimeout(() => burstHearts([5, 15, 25, 35]), 200);
+    }
+
+    // ============================================
+    // CELEBRATION - HEART BURST
+    // ============================================
+
+    function burstHearts(indices) {
+      const heartEmojis = ['💖', '💕', '💗', '❤️', '💘', '🌸'];
+      
+      indices.forEach((idx, i) => {
+        const cell = boardEl.children[idx];
+        if (!cell) return;
+        
+        const rect = cell.getBoundingClientRect();
+        
+        for (let j = 0; j < 6; j++) {
+          setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.className = 'heart-burst';
+            heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+            heart.style.left = (rect.left + rect.width / 2) + 'px';
+            heart.style.top = (rect.top + rect.height / 2) + 'px';
+            heart.style.setProperty('--tx', (Math.random() - 0.5) * 300 + 'px');
+            heart.style.setProperty('--ty', (-150 - Math.random() * 200) + 'px');
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1500);
+          }, j * 80);
+        }
+      });
+    }
+
+    // ============================================
+    // CHAT
+    // ============================================
+
+    function sendChat() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      const message = { sender: myColor, text: text };
+      
+      chatMessages.push(message);
+      if (chatMessages.length > 30) chatMessages = chatMessages.slice(-30);
+      chatInput.value = '';
+      renderChat();
+      
+      if (multiplayerState.isHost) {
+        sendGameState();
+      } else {
+        sendAction('chat', { message: message });
+      }
+    }
+
+    function renderChat() {
+      chatMessagesEl.innerHTML = '';
+      const myColor = (multiplayerState.playerIndex === 0) ? 'blue' : 'pink';
+      chatMessages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        const senderName = (msg.sender === myColor) ? 'You' : 'Mahal';
+        div.innerHTML = `<span class="sender ${msg.sender}">${senderName}:</span>${msg.text}`;
+        chatMessagesEl.appendChild(div);
+      });
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+
+    hostGameBtn.addEventListener('click', hostGame);
+    joinGameBtn.addEventListener('click', joinGame);
+    
+    // Copy host ID on tap
+    hostIdEl.addEventListener('click', () => {
+      const text = hostIdEl.textContent;
+      if (text === '---' || text === '✅ Copied!') return;
+      
+      const copyToClipboard = (str) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(str);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = str;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          return Promise.resolve();
+        }
+      };
+      
+      copyToClipboard(text).then(() => {
+        hostIdEl.textContent = '✅ Copied!';
+        setTimeout(() => { hostIdEl.textContent = text; }, 1500);
+      }).catch(() => {
+        hostIdEl.textContent = '✅ Copied!';
+        setTimeout(() => { hostIdEl.textContent = text; }, 1500);
+      });
+    });
+
+    startBtn.addEventListener('click', () => {
+      startScreen.classList.add('hidden');
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (multiplayerState.isHost) {
+        resetGame();
+        sendGameState();
+      } else {
+        sendAction('restart');
+      }
+    });
+
+    playAgainBtn.addEventListener('click', () => {
+      gameOverScreen.classList.add('hidden');
+      if (multiplayerState.isHost) {
+        resetGame();
+        sendGameState();
+      } else {
+        sendAction('restart');
+      }
+    });
+
+    chatSendBtn.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendChat();
+    });
+
+    // Prevent double-tap zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) e.preventDefault();
+      lastTouchEnd = now;
+    }, false);
+
+    // ============================================
+    // INIT
+    // ============================================
+
+    initializeMultiplayer();
+    initBoard();
+    updateUI();
+  </script>
+</body>
+</html>
